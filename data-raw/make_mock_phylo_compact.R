@@ -1,5 +1,9 @@
 
 # get a subset of the data (run this) --------------------------------------------------------------
+
+library(tidyverse)
+library(yingtools2)
+library(phyloseq)
 rm(list=ls())
 load("data/mock_phylo.RData")
 
@@ -46,7 +50,42 @@ samp.subset <- c("FMT.0092A..pool624.FMT.Hiseq", "FMT.0092A..pool627.FMT", "FMT.
 smaller.phy <- prune_samples(samp.subset,mock.phy) %>% prune_unused_taxa()
 
 
-saveRDS(smaller.phy,file="data/mock_phylo_compact.RData")
+s <- smaller.phy %>% get.samp() %>%
+  arrange(pt,day,Sample_ID) %>% 
+  group_by(pt) %>%
+  mutate(id=cur_group_id(),
+         day=day-min(day)) %>%
+  ungroup() %>%
+  group_by(Sample_ID) %>%
+  mutate(sample.id=paste0("samp",cur_group_id()),
+         replicate=row_number()) %>%
+  ungroup() %>%
+  mutate(
+    is.healthy=substr(MRN,1,2)=="ty",
+    pt=ifelse(is.healthy,"HV",paste0("PT",id)),
+         pt.day=str_glue("{pt}_d{day}"),
+         pt.day.samp=str_glue("{pt.day}_{sample.id}"),
+         new.sample=str_glue("{pt.day.samp}_{replicate}"))
 
+sample_names(smaller.phy) <- s$new.sample[match(sample_names(smaller.phy),s$sample)]
+s.final <- s %>% select(sample=new.sample,pt,day,pt.day,pt.day.samp,sample.id,replicate,source,is.healthy) %>% 
+  group_by(pt.day) %>% mutate(has.sameday=n()>1) %>% 
+  group_by(pt.day.samp) %>% mutate(has.reseq=n()>1) %>%
+  ungroup()
+sample_data(smaller.phy) <- s.final %>% set.samp()
 
+library(msa)
+library(seqinr)
+library(ape)
+seq <- refseq(smaller.phy)
+msa <- msa::msa(seq)
+align <- msaConvert(msa,type="seqinr::alignment")
+d <- dist.alignment(align,"identity")
+tree <- njs(d)
+phy_tree(smaller.phy) <- tree
+
+saveRDS(smaller.phy,file="data/mock_phylo_compact.rds")
+# smaller.phy <- readRDS("data/mock_phylo_compact.rds")
+# s <- get.samp(smaller.phy)
+# new.s <- s
 
