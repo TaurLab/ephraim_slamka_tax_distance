@@ -36,33 +36,6 @@ rm(s1,s2)
 # most samples are from different pts
 pairs %>% count(status)
 
-
-
-# examine each pt's samples at different tax levels -------------------------------------------------
-
-# get a subset phyloseq and run plot.dist. 
-physub <- subset_samples(phy,pt=="HV")
-g.tyler.bray <- plot.dist(physub,"bray")
-g.tyler.bray
-g.tyler.horn <- plot.dist(physub,"horn")
-g.tyler.horn
-
-# to plot this for all subjects, create list of ggplots:
-glist <- get.samp(phy) %>% group_by(pt) %>%
-  group_map(~{
-    pt <- .x$pt[1]
-    metric <- "horn"
-    physub <- prune_samples(.x$sample,phy) %>% prune_unused_taxa()
-    plot.dist(physub, method=metric, sortby=c("pt","pt.day","pt.day.samp")) +
-      ggtitle(str_glue("subject: {pt} / metric: {metric}"))
-  },.keep=TRUE)
-
-pdf("plots/mock_metrics.pdf",width=34,height=17)
-glist
-dev.off()
-shell.exec(normalizePath("plots/mock_metrics.pdf"))
-
-
 # create various distances, including the customized ------------------------------------------------
 
 # this function will calculate horn (or other) distance, and then
@@ -128,6 +101,33 @@ dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
 
 
 
+# examine each pt's samples at different tax levels -------------------------------------------------
+
+# get a subset phyloseq and run plot.dist. 
+physub <- subset_samples(phy,pt=="HV")
+g.tyler.bray <- plot.dist(physub,"bray")
+g.tyler.bray
+g.tyler.horn <- plot.dist(physub,"horn")
+g.tyler.horn
+
+# to plot this for all subjects, create list of ggplots:
+glist <- get.samp(phy) %>% group_by(pt) %>%
+  group_map(~{
+    pt <- .x$pt[1]
+    metric <- "horn"
+    physub <- prune_samples(.x$sample,phy) %>% prune_unused_taxa()
+    plot.dist(physub, method=metric, sortby=c("pt","pt.day","pt.day.samp")) +
+      ggtitle(str_glue("subject: {pt} / metric: {metric}"))
+  },.keep=TRUE)
+
+pdf("plots/mock_metrics.pdf",width=34,height=17)
+glist
+dev.off()
+shell.exec(normalizePath("plots/mock_metrics.pdf"))
+
+
+
+
 # view some of the pairs to get an idea ----------------------------------------------------------
 
 
@@ -158,6 +158,46 @@ dev.off()
 shell.exec(normalizePath("plots/pairs.grouping.taxview.pdf"))
 
 
+# view all resequenced samples ----------------------------------------------------------
+
+s.reseq <- s %>% group_by(pt.day.samp) %>%
+  filter(n()>1)
+
+otu.reseq <- phy %>% prune_samples(s.reseq$sample,.) %>%
+  get.otu.melt() %>%
+  tax.plot(data=TRUE)
+pal <- get.yt.palette2(otu.sameday)
+
+g.reseq.sample <- ggplot(otu.reseq,aes(x=sample,y=pctseqs,fill=Species)) +
+  geom_col(show.legend = FALSE) + 
+  scale_fill_manual(values=pal) +
+  facet_grid(.~pt.day.samp,scales="free_x",space="free_x")
+ggsave("plots/g.all.reseq.pdf",g.same.sample,width=20,height=10)
+shell.exec(normalizePath("plots/g.all.reseq.pdf"))
+
+
+
+# view all same day samples (not same sample)-----------------------------------------------
+
+s.sameday <- s %>% 
+  group_by(pt.day.samp) %>%
+  slice(1) %>%
+  group_by(pt.day) %>%
+  filter(n()>1) %>%
+  ungroup()
+
+otu.sameday <- phy %>% prune_samples(s.sameday$sample,.) %>%
+  get.otu.melt() %>%
+  tax.plot(data=TRUE)
+pal <- get.yt.palette2(otu.sameday)
+
+g.sameday.sample <- ggplot(otu.sameday,aes(x=sample,y=pctseqs,fill=Species)) +
+  geom_col(show.legend = FALSE) + 
+  scale_fill_manual(values=pal) +
+  facet_grid(.~pt.day,scales="free_x",space="free_x")
+
+ggsave("g.same.sample.pdf",g.sameday.sample,width=15,height=8)
+shell.exec("g.same.sample.pdf")
 
 
 # violin of distances -----------------------------------------------------
@@ -191,8 +231,8 @@ mg <- marrangeGrob(list(
   g.v.taxhorn.weightedmean),
   ncol=3,nrow=3)
 
-ggsave("violin_compare_groups.pdf",mg,width=20,height=12)
-shell.exec("violin_compare_groups.pdf")
+ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
+shell.exec(normalizePath("plots/violin_compare_groups.pdf"))
 
 
 # pca of samples ---------------------------------------------------------------------
@@ -230,18 +270,20 @@ view.hclust <- function(dist,.phy=phy,title="") {
   tr <- as.phylo(hc)
   gt <- ggtree(tr) %<+% get.samp(.phy)
   gd <- gt$data
+  pad <- (max(gd$x)-min(gd$x)) * 0.05
+  ylim <- range(gd$x) + c(0,pad)
   s.dups.hc <- gd %>% filter(has.sameday) %>%
     arrange(y) %>%
     mutate(lbl=ifelse(has.sameday,pt.day,NA_character_),
            row=get.row(y,y,row=pt.day,min.gap=1)) 
   map <- gd %>% filter(isTip) %>%
     select(sample=label,x,y)
-
   xlim <- range(map$y) + c(-0.5,0.5)
   otu <- .phy %>% get.otu.melt() %>%
     left_join(map,by="sample") %>%
     tax.plot(data=TRUE)
   pal <- get.yt.palette2(otu)
+  
   g.tax <- ggplot(otu,aes(x=y,y=pctseqs,fill=Species)) + 
     geom_col(show.legend=FALSE) +
     geom_text(aes(y=y.text,label=tax.label),angle=-90) +
@@ -258,16 +300,18 @@ view.hclust <- function(dist,.phy=phy,title="") {
     coord_cartesian(xlim=xlim,expand=FALSE) + expand_limits(y=row.range) + theme_void() 
 
   g.hclust <- gt + 
-    expand_limits(x=max(gd$x)+0.012) +
+    expand_limits(x=ylim) +
     geom_point2(data=gd,aes(subset=isTip,color=pt,size=has.sameday),alpha=0.75) +
     geom_point2(data=gd,aes(subset=isTip & has.reseq,size=has.sameday),shape=1) +
     # geom_text2(data=gd,aes(subset=isTip & has.sameday, label=pt.day.samp, size=has.sameday),angle=-90,hjust=-0.05,size=3) +
     scale_x_reverse() +
     coord_flip(ylim=xlim,expand=FALSE) +
     ggtitle(title)
+  g.hclust
   
   gg.stack(g.hclust,g.groups,g.tax,heights=c(3,1,4),as.gtable = TRUE)
 }
+
 
 g.hc.manhattan <- view.hclust(dist.manhattan,title="manhattan")
 g.hc.bray <- view.hclust(dist.bray,title="bray")
@@ -289,5 +333,5 @@ mg <- marrangeGrob(list(
   g.hc.taxhorn.weightedmean),
   ncol=1,nrow=1)
 
-ggsave("hclust_compare.pdf",mg,width=20,height=12)
-shell.exec("hclust_compare.pdf")
+ggsave("plots/hclust_compare.pdf",mg,width=20,height=12)
+shell.exec(normalizePath("plots/hclust_compare.pdf"))
