@@ -143,7 +143,6 @@ pairs.select <- pairs %>%
   pivot_longer(cols=c(sample1,sample2),values_to="sample") %>%
   left_join(otu,by="sample")
 
-
 g.pairs.select <- 
   ggplot(pairs.select,aes(x=name,y=pctseqs,fill=Species)) + geom_col(show.legend=FALSE) +
   # geom_text(aes(y=y.text,label=tax.label),angle=-90) +
@@ -196,8 +195,8 @@ g.sameday.sample <- ggplot(otu.sameday,aes(x=sample,y=pctseqs,fill=Species)) +
   scale_fill_manual(values=pal) +
   facet_grid(.~pt.day,scales="free_x",space="free_x")
 
-ggsave("g.same.sample.pdf",g.sameday.sample,width=15,height=8)
-shell.exec("g.same.sample.pdf")
+ggsave("plots/g.same.sample.pdf",g.sameday.sample,width=15,height=8)
+shell.exec("plots/g.same.sample.pdf")
 
 
 # violin of distances -----------------------------------------------------
