@@ -99,6 +99,11 @@ dist.taxhorn.mean <- get.taxdist(phy,fn=mean,method="horn")
 dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
 
 
+# dist.taxhorn.scratch <- get.taxdist(phy,fn=mean,method="horn",show.work = TRUE)
+# x <- dist.taxhorn.scratch$dist.list[[10]]
+# mean(x)
+# weighted.mean(x)
+
 
 
 # examine each pt's samples at different tax levels -------------------------------------------------
@@ -169,9 +174,13 @@ pal <- get.yt.palette2(otu.sameday)
 
 g.reseq.sample <- ggplot(otu.reseq,aes(x=sample,y=pctseqs,fill=Species)) +
   geom_col(show.legend = FALSE) + 
+  geom_text(aes(y=y.text,label=tax.label),angle=-90) +
   scale_fill_manual(values=pal) +
   facet_grid(.~pt.day.samp,scales="free_x",space="free_x")
-ggsave("plots/g.all.reseq.pdf",g.same.sample,width=20,height=10)
+
+g.reseq.sample
+
+ggsave("plots/g.all.reseq.pdf",g.reseq.sample,width=20,height=10)
 shell.exec(normalizePath("plots/g.all.reseq.pdf"))
 
 
@@ -192,9 +201,10 @@ pal <- get.yt.palette2(otu.sameday)
 
 g.sameday.sample <- ggplot(otu.sameday,aes(x=sample,y=pctseqs,fill=Species)) +
   geom_col(show.legend = FALSE) + 
+  geom_text(aes(y=y.text,label=tax.label),angle=-90) +
   scale_fill_manual(values=pal) +
   facet_grid(.~pt.day,scales="free_x",space="free_x")
-
+g.sameday.sample
 ggsave("plots/g.same.sample.pdf",g.sameday.sample,width=15,height=8)
 shell.exec("plots/g.same.sample.pdf")
 
@@ -219,7 +229,7 @@ g.v.wunifrac <- view_violin(dist.wunifrac,title="wunifrac")
 g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
 g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
 
-mg <- marrangeGrob(list(
+vlist <- list(
   g.v.bray,
   g.v.manhattan,
   g.v.euclidean,
@@ -227,9 +237,12 @@ mg <- marrangeGrob(list(
   g.v.unifrac,
   g.v.wunifrac,
   g.v.taxhorn.mean,
-  g.v.taxhorn.weightedmean),
-  ncol=3,nrow=3)
+  g.v.taxhorn.weightedmean)
 
+do.call(grid.arrange,vlist)
+
+
+mg <- marrangeGrob(vlist,ncol=3,nrow=3)
 ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
 shell.exec(normalizePath("plots/violin_compare_groups.pdf"))
 
@@ -262,14 +275,14 @@ do.call(grid.arrange,c(g.pca.list,list(nrow=2)))
 
 # hclust of samples -------------------------------------------------------
 
-view.hclust <- function(dist,.phy=phy,title="") {
+view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
   # by.group <- "pt.day"
   
   hc <- hclust(dist)
   tr <- as.phylo(hc)
   gt <- ggtree(tr) %<+% get.samp(.phy)
   gd <- gt$data
-  pad <- (max(gd$x)-min(gd$x)) * 0.05
+  pad <- (max(gd$x)-min(gd$x)) * 0.025
   ylim <- range(gd$x) + c(0,pad)
   s.dups.hc <- gd %>% filter(has.sameday) %>%
     arrange(y) %>%
@@ -280,7 +293,7 @@ view.hclust <- function(dist,.phy=phy,title="") {
   xlim <- range(map$y) + c(-0.5,0.5)
   otu <- .phy %>% get.otu.melt() %>%
     left_join(map,by="sample") %>%
-    tax.plot(data=TRUE)
+    tax.plot(data=TRUE,label.pct.cutoff = label.pct.cutoff)
   pal <- get.yt.palette2(otu)
   
   g.tax <- ggplot(otu,aes(x=y,y=pctseqs,fill=Species)) + 
@@ -293,9 +306,10 @@ view.hclust <- function(dist,.phy=phy,title="") {
     xlab("Sample") 
   
   row.range <- range(s.dups.hc$row) + c(-0.5,0.5)
-  g.groups <- ggplot(s.dups.hc,aes(x=y,y=row,group=pt.day)) + 
-    geom_path(color="dark gray",linetype="longdash") + 
-    geom_point() +
+  g.groups <- ggplot() + 
+    geom_path(data=s.dups.hc,aes(x=y,y=row,group=pt.day),color="dark gray",linetype="longdash") + 
+    geom_point(data=s.dups.hc,aes(x=y,y=row)) +
+    geom_segment(data=map,aes(x=y,xend=y,y=row.range[1],yend=row.range[2]),color="light gray",alpha=0.35) +
     coord_cartesian(xlim=xlim,expand=FALSE) + expand_limits(y=row.range) + theme_void() 
 
   g.hclust <- gt + 
@@ -320,6 +334,12 @@ g.hc.unifrac <- view.hclust(dist.unifrac,title="unifrac")
 g.hc.wunifrac <- view.hclust(dist.wunifrac,title="wunifrac")
 g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,title="taxhorn.mean")
 g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
+
+grid.newpage()
+grid.draw(g.hc.manhattan)
+
+# g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean",label.pct.cutoff = 0.1)
+# grid.draw(g.hc.taxhorn.weightedmean)
 
 mg <- marrangeGrob(list(
   g.hc.bray,
