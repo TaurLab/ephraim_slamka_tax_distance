@@ -269,6 +269,9 @@ vlist <- list(
   
 do.call(grid.arrange,vlist)
 
+git config --global user.email "ephraimslamka@gmail.com"
+git config --global user.name "Ephraim-Slamka"
+
 
 mg <- marrangeGrob(vlist,ncol=3,nrow=3)
 ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
