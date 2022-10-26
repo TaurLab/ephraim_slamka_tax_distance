@@ -11,7 +11,6 @@ library(tidyverse)
 library(yingtools2) #ying's suite of data tools
 
 rm(list=ls())
-
 phy <- readRDS("data/mock_phylo_compact.rds")
 source("R/functions.R")
 s <- get.samp(phy)
@@ -77,8 +76,8 @@ get.taxdist <- function(phy,fn=mean,method="horn",show.work=FALSE) {
   taxdist <- get.dist(pairwise.calcdist)
   taxdist
 }
-
-
+ 
+ 
 weighted.mean <- function(x) {
   weights <- length(x):1
   sum( x*weights ) / sum(weights)
@@ -97,8 +96,17 @@ dist.wunifrac <- distance(phy,"wunifrac")
 #custom distances
 dist.taxhorn.mean <- get.taxdist(phy,fn=mean,method="horn")
 dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
+dist.taxhorn.aabthing<- get.taxdist(phy,fn=aabthing,method="horn")
+dist.taxhorn.abthing<- get.taxdist(phy,fn=abthing, method="horn")
+dist.taxhorn.acthing<-get.taxdist(phy,fn=acthing,method="horn")
+dist.taxhorn.bthing<-get.taxdist(phy,fn=bthing,method="horn")
+dist.taxhorn.bdthing<-get.taxdist(phy,fn=bdthing,method="horn")
+dist.taxhorn.bbthing<-get.taxdist(phy,fn=bbthing,method="horn")
+dist.taxhorn.nsk<-get.taxdist(phy,fn=nsk,method="horn")
+dist.taxhorn.wnsk2<-get.taxdist(phy,fn=wnsk2,method="horn")
 
-
+dist.taxhorn.wnsk1<-get.taxdist(phy,fn=wnsk1,method="horn")
+dist.taxhorn.bcthing<-get.taxdist(phy,fn=bcthing,method="horn")
 # dist.taxhorn.scratch <- get.taxdist(phy,fn=mean,method="horn",show.work = TRUE)
 # x <- dist.taxhorn.scratch$dist.list[[10]]
 # mean(x)
@@ -228,17 +236,37 @@ g.v.unifrac <- view_violin(dist.unifrac,title="unifrac")
 g.v.wunifrac <- view_violin(dist.wunifrac,title="wunifrac")
 g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
 g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
+g.v.taxhorn.aabthing <- view_violin(dist.taxhorn.aabthing, title="taxhorn.aabthing")
+g.v.taxhorn.abthing<-view_violin(dist.taxhorn.abthing,title="taxhorn.abthing")
+g.v.taxhorn.acthing<-view_violin(dist.taxhorn.acthing,title="taxhorn.acthing")
+g.v.taxhorn.bthing<-view_violin(dist.taxhorn.bthing,title="taxhorn.bthing")
+g.v.taxhorn.bdthing<-view_violin(dist.taxhorn.bdthing,title="taxhorn.bdthing")
+g.v.taxhorn.bbthing<-view_violin(dist.taxhorn.bbthing,title="taxhorn.bbthing")
+g.v.taxhorn.wnsk2<-view_violin(dist.taxhorn.wnsk2,title="taxhorn.wnsk2")
 
-vlist <- list(
-  g.v.bray,
-  g.v.manhattan,
-  g.v.euclidean,
+g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk1")
+g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
+g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
+vlist <- list( 
+  #g.v.bray,
+  #g.v.manhattan,
+  #g.v.euclidean,
   g.v.horn,
   g.v.unifrac,
-  g.v.wunifrac,
+  #g.v.wunifrac,
   g.v.taxhorn.mean,
-  g.v.taxhorn.weightedmean)
-
+  #g.v.taxhorn.weightedmean,
+  #g.v.taxhorn.aabthing,
+  #g.v.taxhorn.abthing,
+  #g.v.taxhorn.acthing,
+  #g.v.taxhorn.bthing,
+  #g.v.taxhorn.bdthing,
+  #g.v.taxhorn.bbthing,
+  #g.v.taxhorn.bcthing),
+  g.v.taxhorn.nsk,
+  g.v.taxhorn.wnsk1,
+  g.v.taxhorn.wnsk2)
+  
 do.call(grid.arrange,vlist)
 
 
@@ -322,10 +350,10 @@ view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
     ggtitle(title)
   g.hclust
   
-  gg.stack(g.hclust,g.groups,g.tax,heights=c(3,1,4),as.gtable = TRUE)
+  gg.stack(g.hclust,g.groups,g.tax,heights=c(3,1,4),align.xlim=FALSE,as.gtable = TRUE)
 }
 
-
+g.hc.wnsk<-view.hclust(dist.taxhorn.wnsk,title="taxhorn.wnsk")
 g.hc.manhattan <- view.hclust(dist.manhattan,title="manhattan")
 g.hc.bray <- view.hclust(dist.bray,title="bray")
 g.hc.euclidean <- view.hclust(dist.euclidean,title="euclidean")
@@ -342,15 +370,19 @@ grid.draw(g.hc.manhattan)
 # grid.draw(g.hc.taxhorn.weightedmean)
 
 mg <- marrangeGrob(list(
+  g.hc.wnsk,
   g.hc.bray,
   g.hc.manhattan,
   g.hc.euclidean,
   g.hc.horn,
+  g.hc.aabthing,
   g.hc.unifrac,
   g.hc.wunifrac,
   g.hc.taxhorn.mean,
   g.hc.taxhorn.weightedmean),
   ncol=1,nrow=1)
+
+
 
 ggsave("plots/hclust_compare.pdf",mg,width=20,height=12)
 shell.exec(normalizePath("plots/hclust_compare.pdf"))
