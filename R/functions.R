@@ -106,3 +106,92 @@ plot.dist <- function(phy,method="bray",sortby="sample",
 }
 
 
+# this function will calculate horn (or other) distance, and then
+# apply fn to the values.
+get.taxdist <- function(phy,fn=mean,method="horn",show.work=FALSE) {
+  ranks <- rank_names(phy)
+  samples <- sample_names(phy)
+  # create multiple phyloseq objects, collapsed at the 
+  # Superkingdom, Phylum, .... , Species level. 
+  phy.levels <- ranks %>% seq_along() %>%
+    map(~ranks[1:.x]) %>% map(~phy.collapse(phy,taxranks=.x)) %>%
+    setNames(ranks)
+  phy.levels <- c(phy.levels,list("asv"=phy))
+  all.levels <- names(phy.levels)
+  # calculate the distance matrix (metric=method) for each level.
+  # this is a list of distance matrices.
+  dist.levels <- phy.levels %>% map(~distance(.x,method=method))
+  # run get.pairwise() to get a list of pairwise distances.
+  pairwise.levels <- dist.levels %>% imap(~{
+    newname <- str_glue("dist.{.y}")
+    get.pairwise(.x) %>% rename(!!sym(newname):=dist)
+  })
+  pairwise.all <- pairwise.levels[[1]]
+  
+  for (i in seq_along(all.levels)[-1]) {
+    pairwise.all <- pairwise.all %>% full_join(pairwise.levels[[i]],by=c("sample1","sample2"))
+  }
+  pairwise.melt <- pairwise.all %>% pivot_longer(cols=-c(sample1,sample2),
+                                                 names_to="dist.type",values_to="dist")
+  pairwise.calcdist <- pairwise.melt %>% group_by(sample1,sample2) %>%
+    summarize(dist.list=list(setNames(dist,dist.type)),
+              dist=map_dbl(dist.list,fn),
+              .groups = "drop")
+  if (show.work) {
+    return(pairwise.calcdist)
+  }
+  taxdist <- get.dist(pairwise.calcdist)
+  taxdist
+}
+
+
+
+view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
+  # by.group <- "pt.day"
+  
+  hc <- hclust(dist)
+  tr <- as.phylo(hc)
+  gt <- ggtree(tr) %<+% get.samp(.phy)
+  gd <- gt$data
+  pad <- (max(gd$x)-min(gd$x)) * 0.025
+  ylim <- range(gd$x) + c(0,pad)
+  s.dups.hc <- gd %>% filter(has.sameday) %>%
+    arrange(y) %>%
+    mutate(lbl=ifelse(has.sameday,pt.day,NA_character_),
+           row=get.row(y,y,row=pt.day,min.gap=1)) 
+  map <- gd %>% filter(isTip) %>%
+    select(sample=label,x,y)
+  xlim <- range(map$y) + c(-0.5,0.5)
+  otu <- .phy %>% get.otu.melt() %>%
+    left_join(map,by="sample") %>%
+    tax.plot(data=TRUE,label.pct.cutoff = label.pct.cutoff)
+  pal <- get.yt.palette2(otu)
+  
+  g.tax <- ggplot(otu,aes(x=y,y=pctseqs,fill=Species)) + 
+    geom_col(show.legend=FALSE) +
+    geom_text(aes(y=y.text,label=tax.label),angle=-90) +
+    scale_fill_manual(values=pal) +
+    coord_cartesian(xlim=xlim,expand=FALSE) +
+    theme(axis.text = element_blank(),
+          axis.title.y=element_blank()) +
+    xlab("Sample") 
+  
+  row.range <- range(s.dups.hc$row) + c(-0.5,0.5)
+  g.groups <- ggplot() + 
+    geom_path(data=s.dups.hc,aes(x=y,y=row,group=pt.day),color="dark gray",linetype="longdash") + 
+    geom_point(data=s.dups.hc,aes(x=y,y=row)) +
+    geom_segment(data=map,aes(x=y,xend=y,y=row.range[1],yend=row.range[2]),color="light gray",alpha=0.35) +
+    coord_cartesian(xlim=xlim,expand=FALSE) + expand_limits(y=row.range) + theme_void() 
+  
+  g.hclust <- gt + 
+    expand_limits(x=ylim) +
+    geom_point2(data=gd,aes(subset=isTip,color=pt,size=has.sameday),alpha=0.75) +
+    geom_point2(data=gd,aes(subset=isTip & has.reseq,size=has.sameday),shape=1) +
+    # geom_text2(data=gd,aes(subset=isTip & has.sameday, label=pt.day.samp, size=has.sameday),angle=-90,hjust=-0.05,size=3) +
+    scale_x_reverse() +
+    coord_flip(ylim=xlim,expand=FALSE) +
+    ggtitle(title)
+  g.hclust
+  
+  gg.stack(g.hclust,g.groups,g.tax,heights=c(3,1,4),align.xlim=FALSE,as.gtable = TRUE)
+}
