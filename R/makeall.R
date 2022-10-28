@@ -1,4 +1,6 @@
 
+##### basically the code of analyze, without output
+
 # load data and functions.R (run this first) ---------------------------------------------------------------
 
 library(phyloseq) #phyloseq objects house 16S data
@@ -33,16 +35,10 @@ pairs <- sample_names(phy) %>%
 rm(s1,s2)
 
 # most samples are from different pts
-pairs %>% count(status)
+# pairs %>% count(status)
 
 # create various distances, including the customized ------------------------------------------------
 
- 
- 
-weighted.mean <- function(x) {
-  weights <- length(x):1
-  sum( x*weights ) / sum(weights)
-}
 
 # usual distances 
 
@@ -52,8 +48,6 @@ dist.euclidean <- distance(phy,"euclidean")
 dist.horn <- distance(phy,"horn")
 dist.unifrac <- distance(phy,"unifrac")
 dist.wunifrac <- distance(phy,"wunifrac")
-
-
 
 #ignore what follows, just an attempt at learning, any mention of these functions was just an attempt at learning-----------
 #this isn't finished, I'm just trying to figure out how all of this works.
@@ -73,9 +67,6 @@ pwr<- 1/n
 geomean<- function(set){n<-length(set)
 pwr<-1/n
 (prod(set))^pwr}
-dist.taxhorn.aabthing<- get.taxdist(phy, fn=aabthing, method="horn")
-g.hc.aabthing<-view.hclust(dist.taxhorn.aabthing, title= "aabthing")
-grid.draw(g.hc.aabthing)
 
 #working here
 abthing<-function(x){
@@ -132,8 +123,6 @@ bdthing<-function(x){
   s<-mean(o)
   ifelse(x>d, return(w), return(s))
 }
-frog<-c(0,2,44,57,0.47,9)
-mean(frog[-1])
 
 nsk<-function(x){
   mean(x[-1])
@@ -155,6 +144,9 @@ weighted.mean <- function(x) {
 }
 
 
+
+
+
 #custom distances
 dist.taxhorn.mean <- get.taxdist(phy,fn=mean,method="horn")
 dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
@@ -173,6 +165,8 @@ dist.taxhorn.bcthing<-get.taxdist(phy,fn=bcthing,method="horn")
 # x <- dist.taxhorn.scratch$dist.list[[10]]
 # mean(x)
 # weighted.mean(x)
+# g.hc.aabthing<-view.hclust(dist.taxhorn.aabthing, title= "aabthing")
+# grid.draw(g.hc.aabthing)
 
 
 
@@ -181,9 +175,7 @@ dist.taxhorn.bcthing<-get.taxdist(phy,fn=bcthing,method="horn")
 # get a subset phyloseq and run plot.dist. 
 physub <- subset_samples(phy,pt=="HV")
 g.tyler.bray <- plot.dist(physub,"bray")
-g.tyler.bray
 g.tyler.horn <- plot.dist(physub,"horn")
-g.tyler.horn
 
 # to plot this for all subjects, create list of ggplots:
 glist <- get.samp(phy) %>% group_by(pt) %>%
@@ -195,10 +187,10 @@ glist <- get.samp(phy) %>% group_by(pt) %>%
       ggtitle(str_glue("subject: {pt} / metric: {metric}"))
   },.keep=TRUE)
 
-pdf("plots/mock_metrics.pdf",width=34,height=17)
-glist
-dev.off()
-shell.exec(normalizePath("plots/mock_metrics.pdf"))
+# pdf("plots/mock_metrics.pdf",width=34,height=17)
+# glist
+# dev.off()
+# shell.exec(normalizePath("plots/mock_metrics.pdf"))
 
 
 
@@ -223,37 +215,13 @@ g.pairs.select <-
   # geom_text(aes(y=y.text,label=tax.label),angle=-90) +
   scale_fill_manual(values=pal) +
   facet_grid(status~pair.id,scales="free_x",space="free_x")
-g.pairs.select
+# g.pairs.select
 
-pdf("plots/pairs.grouping.taxview.pdf",width=20,height=12)
-g.pairs.select
-dev.off()
-
-shell.exec(normalizePath("plots/pairs.grouping.taxview.pdf"))
-
-
-# view all resequenced samples ----------------------------------------------------------
-
-s.reseq <- s %>% group_by(pt.day.samp) %>%
-  filter(n()>1)
-
-otu.reseq <- phy %>% prune_samples(s.reseq$sample,.) %>%
-  get.otu.melt() %>%
-  tax.plot(data=TRUE)
-pal <- get.yt.palette2(otu.sameday)
-
-g.reseq.sample <- ggplot(otu.reseq,aes(x=sample,y=pctseqs,fill=Species)) +
-  geom_col(show.legend = FALSE) + 
-  geom_text(aes(y=y.text,label=tax.label),angle=-90) +
-  scale_fill_manual(values=pal) +
-  facet_grid(.~pt.day.samp,scales="free_x",space="free_x")
-
-g.reseq.sample
-
-ggsave("plots/g.all.reseq.pdf",g.reseq.sample,width=20,height=10)
-shell.exec(normalizePath("plots/g.all.reseq.pdf"))
-
-
+# pdf("plots/pairs.grouping.taxview.pdf",width=20,height=12)
+# g.pairs.select
+# dev.off()
+# 
+# shell.exec(normalizePath("plots/pairs.grouping.taxview.pdf"))
 
 # view all same day samples (not same sample)-----------------------------------------------
 
@@ -274,9 +242,33 @@ g.sameday.sample <- ggplot(otu.sameday,aes(x=sample,y=pctseqs,fill=Species)) +
   geom_text(aes(y=y.text,label=tax.label),angle=-90) +
   scale_fill_manual(values=pal) +
   facet_grid(.~pt.day,scales="free_x",space="free_x")
-g.sameday.sample
-ggsave("plots/g.same.sample.pdf",g.sameday.sample,width=15,height=8)
-shell.exec("plots/g.same.sample.pdf")
+# g.sameday.sample
+# ggsave("plots/g.same.sample.pdf",g.sameday.sample,width=15,height=8)
+# shell.exec("plots/g.same.sample.pdf")
+
+
+
+# view all resequenced samples ----------------------------------------------------------
+
+s.reseq <- s %>% group_by(pt.day.samp) %>%
+  filter(n()>1)
+
+otu.reseq <- phy %>% prune_samples(s.reseq$sample,.) %>%
+  get.otu.melt() %>%
+  tax.plot(data=TRUE)
+pal <- get.yt.palette2(otu.sameday)
+
+g.reseq.sample <- ggplot(otu.reseq,aes(x=sample,y=pctseqs,fill=Species)) +
+  geom_col(show.legend = FALSE) + 
+  geom_text(aes(y=y.text,label=tax.label),angle=-90) +
+  scale_fill_manual(values=pal) +
+  facet_grid(.~pt.day.samp,scales="free_x",space="free_x")
+
+# g.reseq.sample
+# 
+# ggsave("plots/g.all.reseq.pdf",g.reseq.sample,width=20,height=10)
+# shell.exec(normalizePath("plots/g.all.reseq.pdf"))
+
 
 
 # violin of distances -----------------------------------------------------
@@ -310,7 +302,7 @@ g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk1")
 g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
 g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
 vlist <- list( 
-  g.v.bray,
+  #g.v.bray,
   #g.v.manhattan,
   #g.v.euclidean,
   g.v.horn,
@@ -325,17 +317,17 @@ vlist <- list(
   #g.v.taxhorn.bdthing,
   #g.v.taxhorn.bbthing,
   #g.v.taxhorn.bcthing),
-  #g.v.taxhorn.nsk,
+  g.v.taxhorn.nsk,
   g.v.taxhorn.wnsk1,
   g.v.taxhorn.wnsk2)
-  
-do.call(grid.arrange,vlist)
+
+# do.call(grid.arrange,vlist)
 
 
 
-mg <- marrangeGrob(vlist,ncol=3,nrow=3)
-ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
-shell.exec(normalizePath("plots/violin_compare_groups.pdf"))
+# mg <- marrangeGrob(vlist,ncol=3,nrow=3)
+# ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
+# shell.exec(normalizePath("plots/violin_compare_groups.pdf"))
 
 
 # pca of samples ---------------------------------------------------------------------
@@ -356,18 +348,19 @@ view.pca <- function(metric) {
   g.pca
 }
 
-view.pca("bray")
-view.pca("horn")
 
-metrics <- c("euclidean","bray","unifrac","wunifrac","horn")
-g.pca.list <- metrics %>% map(view.pca)
-do.call(grid.arrange,c(g.pca.list,list(nrow=2)))
+# view.pca("bray")
+# view.pca("horn")
+# 
+# metrics <- c("euclidean","bray","unifrac","wunifrac","horn")
+# g.pca.list <- metrics %>% map(view.pca)
+# do.call(grid.arrange,c(g.pca.list,list(nrow=2)))
 
 
 # hclust of samples -------------------------------------------------------
 
 
-g.hc.wnsk<-view.hclust(dist.taxhorn.wnsk,title="taxhorn.wnsk")
+g.hc.wnsk1<-view.hclust(dist.taxhorn.wnsk1,title="taxhorn.wnsk")
 g.hc.manhattan <- view.hclust(dist.manhattan,title="manhattan")
 g.hc.bray <- view.hclust(dist.bray,title="bray")
 g.hc.euclidean <- view.hclust(dist.euclidean,title="euclidean")
@@ -377,26 +370,26 @@ g.hc.wunifrac <- view.hclust(dist.wunifrac,title="wunifrac")
 g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,title="taxhorn.mean")
 g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
 
-grid.newpage()
-grid.draw(g.hc.manhattan)
+# grid.newpage()
+# grid.draw(g.hc.manhattan)
 
 # g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean",label.pct.cutoff = 0.1)
 # grid.draw(g.hc.taxhorn.weightedmean)
 
-mg <- marrangeGrob(list(
-  g.hc.wnsk,
-  g.hc.bray,
-  g.hc.manhattan,
-  g.hc.euclidean,
-  g.hc.horn,
-  g.hc.aabthing,
-  g.hc.unifrac,
-  g.hc.wunifrac,
-  g.hc.taxhorn.mean,
-  g.hc.taxhorn.weightedmean),
-  ncol=1,nrow=1)
+# mg <- marrangeGrob(list(
+#   g.hc.wnsk,
+#   g.hc.bray,
+#   g.hc.manhattan,
+#   g.hc.euclidean,
+#   g.hc.horn,
+#   g.hc.aabthing,
+#   g.hc.unifrac,
+#   g.hc.wunifrac,
+#   g.hc.taxhorn.mean,
+#   g.hc.taxhorn.weightedmean),
+#   ncol=1,nrow=1)
 
 
 
-ggsave("plots/hclust_compare.pdf",mg,width=20,height=12)
-shell.exec(normalizePath("plots/hclust_compare.pdf"))
+# ggsave("plots/hclust_compare.pdf",mg,width=20,height=12)
+# shell.exec(normalizePath("plots/hclust_compare.pdf"))

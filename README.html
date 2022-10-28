@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="myself">
 
 <title>Slamka taxdist project</title>
 <style>
@@ -16,69 +15,6 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -111,12 +47,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>myself </p>
-          </div>
-  </div>
     
     
   </div>
@@ -124,135 +54,119 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="title" class="level2">
-<h2 class="anchored" data-anchor-id="title">title</h2>
-<p>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <a href="https://quarto.org" class="uri">https://quarto.org</a>.</p>
-</section>
-<section id="running-code" class="level2">
-<h2 class="anchored" data-anchor-id="running-code">Running Code</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+<section id="prepare-data" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-data">Prepare data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<p>We examined 113 samples, collected from a healthy volunteer (<code>HV</code>), and 3 cancer patients undergoing cancer treatment (<code>PT1</code>, <code>PT2</code>, <code>PT3</code>). In each subject, multiple samples were collected.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Subjects and number of samples </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">pt</th>
+<th style="text-align: right;">n.samples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">HV</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PT1</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PT2</td>
+<td style="text-align: right;">41</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PT3</td>
+<td style="text-align: right;">21</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Each subject’s samples were collected on different days, but also collected on the same day. Some samples were also sequenced multiple times.</p>
+<div class="cell" data-fig.asp="0.3">
+<div class="cell-output-display">
+<p><img src="README_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<p>By selecting all possible pairwise combinations of the sequencing data, we generated various types of two-sample comparisons:</p>
+<ol type="1">
+<li><p>Samples from 2 different subjects.</p></li>
+<li><p>Samples from the same subject, but at 2 different timepoints.</p></li>
+<li><p>2 samples taken from the same patient and same day.</p></li>
+<li><p>2 sequencing runs of the same sample.</p></li>
+</ol>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<pre><code># A tibble: 4 x 2
+  `Pairwise comparison type`     n
+  &lt;chr&gt;                      &lt;int&gt;
+1 diff pt                     4463
+2 same pt (diff day/sample)   1794
+3 same pt/day (diff sample)     34
+4 same pt/day/sample            37</code></pre>
+</div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Pairwise comparison type</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">diff pt</td>
+<td style="text-align: right;">4463</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">same pt (diff day/sample)</td>
+<td style="text-align: right;">1794</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">same pt/day (diff sample)</td>
+<td style="text-align: right;">34</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">same pt/day/sample</td>
+<td style="text-align: right;">37</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<p>You can add options to executable code like this</p>
+<p>A good distace metric should ideally be capable of demonstrating meaningful microbiome differences between individuals, and changes that occur because of antibiotic disruption. It should not be overly affected by minor differences between samples in a stable individual. We reason that <code>#1</code> and <code>#2</code> comparisons would likely yield differences that vary greatly (i.e.&nbsp;wide range of distances, from 0 to 1). On the other hand, <code>#3</code> and <code>#4</code> comparisons would be expected to be very similar (i.e.&nbsp;low distances nearing 0).</p>
+<p>Conventional distance metrics are not ideal when it comes to discerning meaningful differences, as evidenced by the violin plots.</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
+<div class="cell-output-display">
+<p><img src="README_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" style="width:100.0%"></p>
 </div>
 </div>
-<p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
+<p>We attempted a variety of custom distance functions, where distance was derived by calculating separate distance values across all pairwise samples, after by collapsing by each taxonomic level. The functions shown below were various ways to combined the taxonomic level-specific distances. We find <code>taxhorn.wsk1</code> to be the most optimal combining function, which is the weight mean of distances after excluding Superkingdom level.</p>
 <div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(yingtools2)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># given a distance matrix, return a table of pairwise       distances.</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># e.g.: dist(mtcars) %&gt;% get.pairwise()</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  get.pairwise <span class="ot">&lt;-</span> <span class="cf">function</span>(dist,<span class="at">diag=</span><span class="cn">TRUE</span>) {</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dist,<span class="at">diag=</span>diag)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># xy &lt;- t(combn(colnames(mat), 2))</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># data.frame(xy, dist=mat[xy]) %&gt;% as_tibble() %&gt;%   rename(sample1=X1,sample2=X2)</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  rows <span class="ot">&lt;-</span> <span class="fu">rownames</span>(mat)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  xy <span class="ot">&lt;-</span> mat <span class="sc">%&gt;%</span> <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="st">"sample1"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="sc">-</span>sample1,<span class="at">names_to=</span><span class="st">"sample2"</span>,<span class="at">values_to=</span><span class="st">"dist"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample1=</span><span class="fu">factor</span>(sample1,<span class="at">levels=</span>rows),</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>           <span class="at">sample2=</span><span class="fu">factor</span>(sample2,<span class="at">levels=</span>rows)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="fu">as.numeric</span>(sample1)<span class="sc">&lt;=</span><span class="fu">as.numeric</span>(sample2))</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  xy</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co"># given a table of pairwise distances, return the distance matrix.</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># dist(mtcars) %&gt;% get.pairwise() %&gt;% get.dist()</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>get.dist <span class="ot">&lt;-</span> <span class="cf">function</span>(pw) {</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> pw <span class="sc">%&gt;%</span> <span class="fu">pivot_wider</span>(<span class="at">id_cols=</span>sample2,<span class="at">names_from=</span>sample1,<span class="at">values_from=</span>dist) <span class="sc">%&gt;%</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">column_to_rownames</span>(<span class="st">"sample2"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>()</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.dist</span>(mat,<span class="at">diag=</span><span class="cn">TRUE</span>)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co"># visually display a distance matrix.</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># dist(mtcars) %&gt;% view.dist()</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co"># dist(mtcars) %&gt;% view.dist(show.numbers=TRUE)</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>view.dist <span class="ot">&lt;-</span> <span class="cf">function</span>(dist,<span class="at">show.numbers=</span><span class="cn">FALSE</span>) {</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  pairwise <span class="ot">&lt;-</span> <span class="fu">get.pairwise</span>(dist) <span class="sc">%&gt;%</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample2=</span><span class="fu">fct_rev</span>(sample2))</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(pairwise,<span class="fu">aes</span>(<span class="at">x=</span>sample1,<span class="at">y=</span>sample2,<span class="at">label=</span><span class="fu">pretty_number</span>(dist),<span class="at">fill=</span>dist)) <span class="sc">+</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>(<span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    {<span class="cf">if</span> (show.numbers) <span class="fu">geom_text</span>(<span class="at">color=</span><span class="st">"yellow"</span>) <span class="cf">else</span> <span class="cn">NULL</span>} <span class="sc">+</span></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_limits</span>(<span class="at">fill=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>,<span class="at">hjust=</span><span class="dv">0</span>))</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="co"># given a phyloseq object, show stack plot and overlay with distance metric in adjacent samples.</span></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>plot.dist <span class="ot">&lt;-</span> <span class="cf">function</span>(phy,<span class="at">method=</span><span class="st">"bray"</span>,<span class="at">sortby=</span><span class="st">"sample"</span>,</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>                      <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"Superkingdom"</span>,<span class="st">"Phylum"</span>,<span class="st">"Class"</span>,</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Order"</span>,<span class="st">"Family"</span>,<span class="st">"Genus"</span>,<span class="st">"Species"</span>)) {</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  barwidth <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> <span class="fu">get.samp</span>(phy,<span class="at">stats=</span><span class="cn">TRUE</span>,<span class="at">measures=</span><span class="st">"InvSimpson"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="sc">!!!</span><span class="fu">syms</span>(sortby)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample=</span><span class="fu">fct_inorder</span>(sample),</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>           <span class="at">xvar=</span><span class="fu">as.numeric</span>(sample))</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_data</span>(phy) <span class="ot">&lt;-</span> s <span class="sc">%&gt;%</span> <span class="fu">set.samp</span>()</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  otu <span class="ot">&lt;-</span> phy <span class="sc">%&gt;%</span></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">phy.collapse</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get.otu.melt</span>(<span class="at">filter.zero=</span><span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tax.plot</span>(<span class="at">data=</span><span class="cn">TRUE</span>,<span class="at">label.pct.cutoff =</span> <span class="fl">0.1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(Species,otu) <span class="sc">%&gt;%</span></span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">otu=</span><span class="fu">fct_inorder</span>(otu),</span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>           <span class="at">tax.label=</span><span class="fu">sub</span>(<span class="st">" "</span>,<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,tax.label))</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>  pal <span class="ot">&lt;-</span> <span class="fu">get.yt.palette2</span>(otu)</span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  lvl.list <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">seq_along</span>(levels),<span class="sc">~</span>levels[<span class="dv">1</span><span class="sc">:</span>.x])</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(lvl.list) <span class="ot">&lt;-</span> <span class="fu">map</span>(lvl.list,last)</span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>  phy.list <span class="ot">&lt;-</span> <span class="fu">map</span>(lvl.list,<span class="sc">~</span><span class="fu">phy.collapse</span>(phy,<span class="at">taxranks=</span>.x))</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>  phy.list <span class="ot">&lt;-</span> <span class="fu">c</span>(phy.list,<span class="fu">list</span>(<span class="at">asv=</span>phy))</span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>  dist.list <span class="ot">&lt;-</span> phy.list <span class="sc">%&gt;%</span> <span class="fu">map</span>(<span class="sc">~</span><span class="fu">distance</span>(.x,<span class="at">method=</span>method))</span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>  mat.list <span class="ot">&lt;-</span> dist.list <span class="sc">%&gt;%</span> <span class="fu">map</span>(as.matrix)</span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>  adjsamples <span class="ot">&lt;-</span> s <span class="sc">%&gt;%</span></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(<span class="at">sample1=</span>sample,</span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>              <span class="at">sample2=</span><span class="fu">lead</span>(sample),</span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>              <span class="at">xvar1=</span>xvar,</span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>              <span class="at">xvar2=</span><span class="fu">lead</span>(xvar)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sample2)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">xmid=</span>(xvar1<span class="sc">+</span>xvar2)<span class="sc">/</span><span class="dv">2</span>,</span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>           <span class="at">dist.values=</span><span class="fu">map2</span>(sample1,sample2,<span class="cf">function</span>(sample1,sample2) {</span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>             lst <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(mat.list,<span class="cf">function</span>(mat) {</span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>               mat[<span class="fu">as.character</span>(sample1),<span class="fu">as.character</span>(sample2)]</span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>             }) <span class="sc">%&gt;%</span> {<span class="fu">tibble</span>(<span class="at">taxlevel=</span><span class="fu">names</span>(.),<span class="at">ranklevel=</span><span class="fu">rev</span>(<span class="fu">seq_along</span>(.)),<span class="at">dist=</span><span class="fu">unname</span>(.))}</span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>             lst</span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>           })) <span class="sc">%&gt;%</span></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="at">cols=</span>dist.values) <span class="sc">%&gt;%</span></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">y=</span>scales<span class="sc">::</span><span class="fu">rescale</span>(ranklevel,<span class="at">to=</span><span class="fu">c</span>(<span class="fl">1.1</span>,<span class="dv">2</span>)))</span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>  taxlbls <span class="ot">&lt;-</span> adjsamples <span class="sc">%&gt;%</span> <span class="fu">select</span>(taxlevel,ranklevel,y) <span class="sc">%&gt;%</span></span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">x=</span><span class="fl">0.5</span>)</span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>  otu2 <span class="ot">&lt;-</span> otu <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">xvar=</span><span class="fu">map</span>(xvar,<span class="sc">~</span>.<span class="sc">+</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)<span class="sc">*</span>barwidth<span class="sc">/</span><span class="dv">2</span>)) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>(<span class="at">cols=</span>xvar)</span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">data=</span>otu,<span class="fu">aes</span>(<span class="at">x=</span>xvar,<span class="at">y=</span>pctseqs,<span class="at">fill=</span>Species),<span class="at">color=</span><span class="st">"black"</span>,<span class="at">size=</span><span class="fl">0.25</span>,<span class="at">width=</span>barwidth) <span class="sc">+</span></span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_area</span>(<span class="at">data=</span>otu2,<span class="fu">aes</span>(<span class="at">x=</span>xvar,<span class="at">y=</span>numseqs,<span class="at">fill=</span>Species),<span class="at">alpha=</span><span class="fl">0.35</span>,<span class="at">position=</span><span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="at">data=</span>s,<span class="fu">aes</span>(<span class="at">x=</span>xvar,<span class="at">y=</span><span class="dv">0</span>,<span class="at">label=</span><span class="fu">str_glue</span>(<span class="st">"{sample}</span><span class="sc">\n</span><span class="st">InvSimp: {pretty_number(InvSimpson)}</span><span class="sc">\n</span><span class="st">nseqs={short_number(nseqs,sig.digits=1)}"</span>)),</span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>              <span class="at">lineheight=</span><span class="fl">0.75</span>,<span class="at">hjust=</span><span class="fl">1.1</span>,<span class="at">angle=</span><span class="dv">90</span>) <span class="sc">+</span></span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="at">data=</span>otu,<span class="fu">aes</span>(<span class="at">x=</span>xvar,<span class="at">y=</span>y.text,<span class="at">label=</span>tax.label),<span class="at">angle=</span><span class="dv">0</span>,<span class="at">lineheight=</span><span class="fl">0.75</span>) <span class="sc">+</span></span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values=</span>pal) <span class="sc">+</span></span>
-<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">data=</span>adjsamples,<span class="fu">aes</span>(<span class="at">x=</span>xmid,<span class="at">y=</span>y,<span class="at">size=</span>dist),<span class="at">color=</span><span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="at">data=</span>adjsamples,<span class="fu">aes</span>(<span class="at">x=</span>xmid,<span class="at">y=</span>y,<span class="at">label=</span><span class="fu">pretty_number</span>(dist,<span class="dv">3</span>))) <span class="sc">+</span></span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="at">data=</span>taxlbls,<span class="fu">aes</span>(<span class="at">x=</span>x,<span class="at">y=</span>y,<span class="at">label=</span>taxlevel)) <span class="sc">+</span></span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_size_continuous</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="fl">0.5</span>,<span class="dv">10</span>)) <span class="sc">+</span></span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_limits</span>(<span class="at">size=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">y=</span><span class="sc">-</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(method)</span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="cell-output-display">
+<p><img src="README_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<p>If we look at hierarchical clustering of samples based on calculated distances, we can see that the weighted average taxhorn puts out a more desirable ordering. For example, note how samples dominated by <em>Enterococcus</em> more naturally clusters together.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="README_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<p>asdf</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="README_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
 </div>
 </section>
 

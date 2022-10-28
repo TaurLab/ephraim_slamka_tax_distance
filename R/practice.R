@@ -66,6 +66,7 @@ lapply(data,custom_fun2)
 lapply(mock.phy, custom_fun1)
 
 
+<<<<<<< HEAD
 
 #ignore what follows, just an attempt at learning, any mention of these functions was just an attempt at learning-----------
 #this isn't finished, I'm just trying to figure out how all of this works.
@@ -177,3 +178,5 @@ data2<-
     
   )
 
+=======
+>>>>>>> c1449da5594d94c609fb8bcd29ffff94a8006736
