@@ -89,13 +89,13 @@ dist.taxhorn.aabthing<- get.taxdist(phy, fn=aabthing, method="horn")
 g.hc.aabthing<-view.hclust(dist.taxhorn.aabthing, title= "aabthing")
 grid.draw(g.hc.aabthing)
 
-#working here
+#working here 
 abthing<-function(x){
  n<-(sum(x))*(prod(x))
  m<-(n^(1/length(x)))/x
  mean(m)/length(m)
  #pwr<- 1/(length(n))
-# (prod(n))^pwr
+# (prod(n))^pwr  
 }
 acthing<-function(x){
   n<-(sum(x))*(prod(x))

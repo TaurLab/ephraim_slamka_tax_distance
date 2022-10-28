@@ -248,7 +248,7 @@ g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk1")
 g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
 g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
 vlist <- list( 
-  #g.v.bray,
+  g.v.bray,
   #g.v.manhattan,
   #g.v.euclidean,
   g.v.horn,
@@ -263,7 +263,7 @@ vlist <- list(
   #g.v.taxhorn.bdthing,
   #g.v.taxhorn.bbthing,
   #g.v.taxhorn.bcthing),
-  g.v.taxhorn.nsk,
+  #g.v.taxhorn.nsk,
   g.v.taxhorn.wnsk1,
   g.v.taxhorn.wnsk2)
   
