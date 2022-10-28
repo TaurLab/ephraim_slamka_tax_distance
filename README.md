@@ -16,9 +16,9 @@ each subject, multiple samples were collected.
 
 Subjects and number of samples
 
-Each subject’s samples were collected on different days, but also
-collected on the same day. Some samples were also sequenced multiple
-times.
+Each subject’s samples were collected over several different days, but
+more than one sample was taken per day. It should be noted that some
+samples were also sequenced multiple times.
 
 <img src="README_files/figure-gfm/unnamed-chunk-3-1.png"
 style="width:100.0%" />
@@ -51,17 +51,17 @@ we generated various types of two-sample comparisons:
 | same pt/day (diff sample) |   34 |
 | same pt/day/sample        |   37 |
 
-A good distace metric should ideally be capable of demonstrating
-meaningful microbiome differences between individuals, and changes that
-occur because of antibiotic disruption. It should not be overly affected
-by minor differences between samples in a stable individual. We reason
-that `#1` and `#2` comparisons would likely yield differences that vary
-greatly (i.e. wide range of distances, from 0 to 1). On the other hand,
-`#3` and `#4` comparisons would be expected to be very similar (i.e. low
-distances nearing 0).
+A good distance metric should ideally be capable of demonstrating
+meaningful differences between individuals’ microbiomes, including
+changes that occur because of antibiotic disruption. It should not be
+overly affected by minor differences, such as those found between
+samples in a stable individual. We reason that `#1` and `#2` comparisons
+would likely yield differences that vary greatly (i.e. wide range of
+distances, from 0 to 1). On the other hand, `#3` and `#4` comparisons
+would be expected to be very similar (i.e. low distances nearing 0).
 
 Conventional distance metrics are not ideal when it comes to discerning
-meaningful differences, as evidenced by the violin plots.
+meaningful differences, as evidenced by the violin plots below.
 
 <img src="README_files/figure-gfm/unnamed-chunk-5-1.png"
 style="width:100.0%" />

@@ -1,6 +1,6 @@
 
 library(tidyverse)
-library(yingtools2) 
+library(yingtools2)   
 
 # given a distance matrix, return a table of pairwise distances.
 # e.g.: dist(mtcars) %>% get.pairwise()

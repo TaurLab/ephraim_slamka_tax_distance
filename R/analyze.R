@@ -287,7 +287,8 @@ view_violin <- function(dist,title) {
   pairdata <- dist %>% get.pairwise() %>%
     inner_join(pairs,by=c("sample1","sample2"))
   ggplot(pairdata,aes(x=status,y=dist,fill=status)) + geom_violin() +
-    geom_boxplot(alpha=0.1) + ggtitle(title) + expand_limits(y=c(0,1)) + theme(legend.position="none")
+    geom_boxplot(alpha=0.1) + ggtitle(title) + expand_limits(y=c(0,1)) +
+    theme(legend.position="none") 
 }
 
 g.v.manhattan <- view_violin(dist.manhattan,title="manhattan")
@@ -311,11 +312,11 @@ g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
 g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
 vlist <- list( 
   g.v.bray,
-  #g.v.manhattan,
-  #g.v.euclidean,
+  g.v.manhattan,
+  g.v.euclidean,
   g.v.horn,
   g.v.unifrac,
-  #g.v.wunifrac,
+  g.v.wunifrac,
   g.v.taxhorn.mean,
   #g.v.taxhorn.weightedmean,
   #g.v.taxhorn.aabthing,
@@ -326,8 +327,8 @@ vlist <- list(
   #g.v.taxhorn.bbthing,
   #g.v.taxhorn.bcthing),
   #g.v.taxhorn.nsk,
-  g.v.taxhorn.wnsk1,
-  g.v.taxhorn.wnsk2)
+  g.v.taxhorn.wnsk1)
+  #g.v.taxhorn.wnsk2)
   
 do.call(grid.arrange,vlist)
 
@@ -376,7 +377,7 @@ g.hc.unifrac <- view.hclust(dist.unifrac,title="unifrac")
 g.hc.wunifrac <- view.hclust(dist.wunifrac,title="wunifrac")
 g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,title="taxhorn.mean")
 g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
-
+  
 grid.newpage()
 grid.draw(g.hc.manhattan)
 
