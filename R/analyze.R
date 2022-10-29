@@ -25,10 +25,10 @@ pairs <- sample_names(phy) %>%
   left_join(s1,by="sample1") %>%
   left_join(s2,by="sample2") %>%
   mutate(status=case_when(
-    pt.day.samp1==pt.day.samp2 ~ "same pt/day/sample",
-    pt.day1==pt.day2 ~ "same pt/day (diff sample)",
-    pt1==pt2 ~ "same pt (diff day/sample)",
-    TRUE ~ "diff pt",
+    pt.day.samp1==pt.day.samp2 ~ "same pt \r\n day \r\n sample",
+    pt.day1==pt.day2 ~ "  same pt \r\n day \r\n (diff sample)",
+    pt1==pt2 ~ "  same pt \r\n (diff day/sample) ",
+    TRUE ~"  diff pt  ",
   ))
 rm(s1,s2)
 
@@ -283,12 +283,13 @@ shell.exec("plots/g.same.sample.pdf")
 
 #compare by group:
 
+
 view_violin <- function(dist,title) {
   pairdata <- dist %>% get.pairwise() %>%
     inner_join(pairs,by=c("sample1","sample2"))
-  ggplot(pairdata,aes(x=status,y=dist,fill=status)) + geom_violin() +
+  ggplot(pairdata,aes(x=status,y=dist,fill=status)) + geom_violin(position = position_dodge(3)) +
     geom_boxplot(alpha=0.1) + ggtitle(title) + expand_limits(y=c(0,1)) +
-    theme(legend.position="none") 
+    theme(legend.position= "none")
 }
 
 g.v.manhattan <- view_violin(dist.manhattan,title="manhattan")
@@ -299,17 +300,17 @@ g.v.unifrac <- view_violin(dist.unifrac,title="unifrac")
 g.v.wunifrac <- view_violin(dist.wunifrac,title="wunifrac")
 g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
 g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
-g.v.taxhorn.aabthing <- view_violin(dist.taxhorn.aabthing, title="taxhorn.aabthing")
-g.v.taxhorn.abthing<-view_violin(dist.taxhorn.abthing,title="taxhorn.abthing")
-g.v.taxhorn.acthing<-view_violin(dist.taxhorn.acthing,title="taxhorn.acthing")
-g.v.taxhorn.bthing<-view_violin(dist.taxhorn.bthing,title="taxhorn.bthing")
-g.v.taxhorn.bdthing<-view_violin(dist.taxhorn.bdthing,title="taxhorn.bdthing")
-g.v.taxhorn.bbthing<-view_violin(dist.taxhorn.bbthing,title="taxhorn.bbthing")
-g.v.taxhorn.wnsk2<-view_violin(dist.taxhorn.wnsk2,title="taxhorn.wnsk2")
+#g.v.taxhorn.aabthing <- view_violin(dist.taxhorn.aabthing, title="taxhorn.aabthing")
+#g.v.taxhorn.abthing<-view_violin(dist.taxhorn.abthing,title="taxhorn.abthing")
+#g.v.taxhorn.acthing<-view_violin(dist.taxhorn.acthing,title="taxhorn.acthing")
+#g.v.taxhorn.bthing<-view_violin(dist.taxhorn.bthing,title="taxhorn.bthing")
+#g.v.taxhorn.bdthing<-view_violin(dist.taxhorn.bdthing,title="taxhorn.bdthing")
+#g.v.taxhorn.bbthing<-view_violin(dist.taxhorn.bbthing,title="taxhorn.bbthing")
+#g.v.taxhorn.wnsk2<-view_violin(dist.taxhorn.wnsk2,title="taxhorn.wnsk2")
 
-g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk1")
-g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
-g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
+g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk")
+#g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
+#g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
 vlist <- list( 
   g.v.bray,
   g.v.manhattan,
@@ -330,8 +331,9 @@ vlist <- list(
   g.v.taxhorn.wnsk1)
   #g.v.taxhorn.wnsk2)
   
-do.call(grid.arrange,vlist)
 
+do.call(grid.arrange,vlist)
+#find way to seperate violin plot collumns
 
 
 mg <- marrangeGrob(vlist,ncol=3,nrow=3)

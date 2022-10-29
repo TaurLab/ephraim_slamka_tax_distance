@@ -91,7 +91,7 @@ ul.task-list{list-style: none;}
 </table>
 </div>
 </div>
-<p>Each subject’s samples were collected on different days, but also collected on the same day. Some samples were also sequenced multiple times.</p>
+<p>Each subject’s samples were collected over several different days, but more than one sample was sometimes taken per day. It should be noted that some samples were also sequenced multiple times.</p>
 <div class="cell" data-fig.asp="0.3">
 <div class="cell-output-display">
 <p><img src="README_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" style="width:100.0%"></p>
@@ -106,7 +106,7 @@ ul.task-list{list-style: none;}
 </ol>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 x 2
+<pre><code># A tibble: 4 × 2
   `Pairwise comparison type`     n
   &lt;chr&gt;                      &lt;int&gt;
 1 diff pt                     4463
@@ -143,8 +143,8 @@ ul.task-list{list-style: none;}
 </table>
 </div>
 </div>
-<p>A good distace metric should ideally be capable of demonstrating meaningful microbiome differences between individuals, and changes that occur because of antibiotic disruption. It should not be overly affected by minor differences between samples in a stable individual. We reason that <code>#1</code> and <code>#2</code> comparisons would likely yield differences that vary greatly (i.e.&nbsp;wide range of distances, from 0 to 1). On the other hand, <code>#3</code> and <code>#4</code> comparisons would be expected to be very similar (i.e.&nbsp;low distances nearing 0).</p>
-<p>Conventional distance metrics are not ideal when it comes to discerning meaningful differences, as evidenced by the violin plots.</p>
+<p>A good distance metric should ideally be capable of demonstrating meaningful differences between individuals’ microbiomes, including changes that occur because of antibiotic disruption. It should not be overly affected by minor differences, such as those found between samples in a stable individual. We reason that <code>#1</code> and <code>#2</code> comparisons would likely yield differences that vary greatly (i.e.&nbsp;wide range of distances, from 0 to 1). On the other hand, <code>#3</code> and <code>#4</code> comparisons would be expected to be quite similar (i.e.&nbsp;low distances nearing 0).</p>
+<p>Conventional distance metrics are not ideal when it comes to discerning meaningful differences, as evidenced by the violin plots below.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="README_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" style="width:100.0%"></p>
@@ -156,13 +156,13 @@ ul.task-list{list-style: none;}
 <p><img src="README_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" style="width:100.0%"></p>
 </div>
 </div>
-<p>If we look at hierarchical clustering of samples based on calculated distances, we can see that the weighted average taxhorn puts out a more desirable ordering. For example, note how samples dominated by <em>Enterococcus</em> more naturally clusters together.</p>
+<p>If we look at hierarchical clustering of samples based on calculated distances, we can see that the weighted average taxhorn puts out a more desirable ordering.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="README_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" style="width:100.0%"></p>
 </div>
 </div>
-<p>asdf</p>
+<p>For example, note how samples dominated by <em>Enterococcus</em> more naturally clusters together.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="README_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" style="width:100.0%"></p>
