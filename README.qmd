@@ -75,8 +75,8 @@ Conventional distance metrics are not ideal when it comes to discerning meaningf
 
 ```{r}
 #| out-width: 100%
-#| fig-width: 20
-#| fig-height: 6.6
+#| fig-width: 12
+#| fig-height: 18
 
 
 grid.arrange(g.v.euclidean,
@@ -84,7 +84,7 @@ g.v.manhattan,
 g.v.bray,
 g.v.horn,
 g.v.unifrac,
-g.v.wunifrac,nrow=2,ncol=3)
+g.v.wunifrac,nrow=3,ncol=2)
 
 # g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
 # g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
