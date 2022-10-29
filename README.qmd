@@ -1,6 +1,6 @@
 ---
 title: "Slamka taxdist project"
-format: gfm  #change to gfm
+format:  gfm  #change to gfm
 editor: visual
 execute: 
   echo: false

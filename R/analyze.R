@@ -289,7 +289,7 @@ view_violin <- function(dist,title) {
     inner_join(pairs,by=c("sample1","sample2"))
   ggplot(pairdata,aes(x=status,y=dist,fill=status)) + geom_violin(position = position_dodge(10)) +
     geom_boxplot(alpha=0.1) + ggtitle(title) + expand_limits(y=c(0,1)) +
-    theme(legend.position= "none")
+    theme(legend.position= "none") 
 }
 
 g.v.manhattan <- view_violin(dist.manhattan,title="manhattan")
