@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>formulas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+<script src="formulas_files/libs/clipboard/clipboard.min.js"></script>
+<script src="formulas_files/libs/quarto-html/quarto.js"></script>
+<script src="formulas_files/libs/quarto-html/popper.min.js"></script>
+<script src="formulas_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="formulas_files/libs/quarto-html/anchor.min.js"></script>
+<link href="formulas_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="formulas_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="formulas_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="formulas_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="formulas_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">formulas</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<p>Various distance metrics have been used to assess beta-diversity across sample populations in microbial ecology.</p>
+<p>Some are shown below, where <span class="math inline">\(D_{jk}\)</span> denotes the calculated distance between samples <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>, where <span class="math inline">\(x_{ij}\)</span> and <span class="math inline">\(x_{ik}\)</span> refer to the quantity of bacterial species/strain <span class="math inline">\(i\)</span> in pairwise samples <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 93%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Distance Metric</th>
+<th style="text-align: left;">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Euclidean</td>
+<td style="text-align: left;"><span class="math inline">\(\mathrm{Deuc}_{jk} = \sqrt{\sum_i (x_{ij}-x_{ik})^2}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Manhattan</td>
+<td style="text-align: left;"><span class="math inline">\(\mathrm{Dman}_{jk}=\sum_i \mid x_{ij}-x_{ik} \mid\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Morisita</td>
+<td style="text-align: left;"><span class="math inline">\(\mathrm{Dmor}_{jk} = 1 - \dfrac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}\)</span>, where <span class="math inline">\(\lambda_j = \dfrac{\sum_i x_{ij} (x_{ij} - 1)}{\sum_i x_{ij} \sum_i (x_{ij} - 1)}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Morisita-Horn</td>
+<td style="text-align: left;"><span class="math inline">\(\mathrm{Dhorn}_{jk} = 1 - \dfrac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}\)</span>, where <span class="math inline">\(\lambda_j = \sum_i {x_{ij}}^2/(\sum_i x_{ij})^2\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Other metrics calculate beta diversity by examining genetic relatedness among microbial members. Unifrac calculates beta-diversity distance between two populations using a phylogenetic tree, where <span class="math inline">\(l_n\)</span> represents the length between node <span class="math inline">\(n\)</span> and its parent, and <span class="math inline">\(X_{nj}\)</span> and <span class="math inline">\(X_{nk}\)</span> are indicators (0 or 1) as descendants of node <span class="math inline">\(n\)</span> are absent or present in samples <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>, respectively.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 83%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Distance Metric</th>
+<th style="text-align: left;">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Unweighted Unifrac</td>
+<td style="text-align: left;"><span class="math inline">\(\mathrm{Dunifrac}_{jk} = \dfrac{\sum_n l_n \mid A_n - B_n \mid}{\sum_n l_n \max(X_{nj}, X_{nk})}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>There are limitations with all of the above metrics.</p>
+<p>We used Horn index to calculate <span class="math inline">\(\mathrm{Dhorn}_{jk}\)</span>, representing the Horn calculation across all taxonomic levels</p>
+<p>Let <span class="math inline">\(H_{ijk}\)</span> represent the Horn index calculated at the taxonomic level <span class="math inline">\(i\)</span> for samples <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>.</p>
+<p><span class="math display">\[
+\mathrm{Dtaxhorn}_{jk} = \dfrac{\sum_{i=2}^{N} (N-i-1) \mathrm{Dhorn}_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
+\]</span></p>
+<p>That is, the weighted average of Horn distances calculated for each taxonomic level. Lower taxonomic levels are weighted more than higher taxonomic levels. We omit the first level, Superkingdom, since its value is ‘Bacteria’ for all microbial members in the sample data. Therefore the weights across levels are as follows: Superkingdom: 0, Phylum: 7, Class: 6, Order: 5, Family: 4, Genus: 3, Species: 2, ASV: 1.</p>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
