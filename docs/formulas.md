@@ -9,12 +9,12 @@ between samples $j$ and $k$, where $x_{ij}$ and $x_{ik}$ refer to the
 quantity of bacterial species/strain $i$ in pairwise samples $j$ and
 $k$.
 
-| Distance Metric | Definition                                                                                                                                                                                         |
-|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Euclidean       | $Deuc_{jk} = \sqrt{\sum_i (x_{ij}-x_{ik})^2}$                                                                                                                                                      |
-| Manhattan       | $Dman_{jk}=\sum_i \mid x_{ij}-x_{ik} \mid$                                                                                                                                                         |
-| Morisita        | $Dmor_{jk} = 1 - \dfrac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}$, where $\lambda_j = \dfrac{\sum_i x_{ij} (x_{ij} - 1)}{\sum_i x_{ij} \sum_i (x_{ij} - 1)}$ |
-| Morisita-Horn   | $Dhorn_{jk} = 1 - \frac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}$, where $\lambda_j = \sum_i {x_{ij}}^2/(\sum_i x_{ij})^2$                                   |
+| Distance Metric | Definition                                                                                                                                                                                       |
+|:----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Euclidean       | $Deuc_{jk} = \sqrt{\sum_i (x_{ij}-x_{ik})^2}$                                                                                                                                                    |
+| Manhattan       | $Dman_{jk}=\sum_i \mid x_{ij}-x_{ik} \mid$                                                                                                                                                       |
+| Morisita        | $Dmor_{jk} = 1 - \frac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}$, where $\lambda_j = \frac{\sum_i x_{ij} (x_{ij} - 1)}{\sum_i x_{ij} \sum_i (x_{ij} - 1)}$ |
+| Morisita-Horn   | $Dhorn_{jk} = 1 - \frac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}$, where $\lambda_j = \sum_i {x_{ij}}^2/(\sum_i x_{ij})^2$                                 |
 
 Other metrics calculate beta diversity by examining genetic related-ness
 among microbial members. Unifrac calculates beta-diversity distance
@@ -36,7 +36,7 @@ Let $H_{ijk}$ represent the Horn index calculated at the taxonomic level
 $i$ for samples $j$ and $k$.
 
 $$
-Dtaxhorn_{jk} = \dfrac{\sum_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
+Dtaxhorn_{jk} = \frac{\sum_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
 $$
 
 That is, the weighted average of Horn distances calculated for each
