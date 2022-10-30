@@ -32,8 +32,8 @@ There are limitations with all of the above metrics.
 We used Horn index to calculate $Dtaxhorn_{jk}$, representing the Horn
 calculation across all taxonomic levels
 
-Let $H_{ijk}$ represent the Horn index calculated at the taxonomic level
-$i$ for samples $j$ and $k$.
+Let $Dhorn_{ijk}$ represent the Horn index calculated at the taxonomic
+level $i$ for samples $j$ and $k$.
 
 $$
 Dtaxhorn_{jk} = \dfrac{\sum\limits_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum\limits_{i=2}^{N} (N-i-1)}
