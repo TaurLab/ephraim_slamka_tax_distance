@@ -29,14 +29,14 @@ or present in samples $j$ and $k$, respectively.
 
 There are limitations with all of the above metrics.
 
-We used Horn index to calculate ${Dhorn}_{jk}$, representing the Horn
+We used Horn index to calculate $Dhorn_{jk}$, representing the Horn
 calculation across all taxonomic levels
 
 Let $H_{ijk}$ represent the Horn index calculated at the taxonomic level
 $i$ for samples $j$ and $k$.
 
 $$
-{Dtaxhorn}_{jk} = \dfrac{\sum_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
+Dtaxhorn_{jk} = \dfrac{\sum_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
 $$
 
 That is, the weighted average of Horn distances calculated for each
