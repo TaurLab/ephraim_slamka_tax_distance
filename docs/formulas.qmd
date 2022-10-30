@@ -49,7 +49,7 @@ We used Horn index to calculate $Dhorn_{jk}$, representing the Horn calculation 
 Let $H_{ijk}$ represent the Horn index calculated at the taxonomic level $i$ for samples $j$ and $k$.
 
 $$
-Dtaxhorn_{jk} = \frac{\sum_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
+Dtaxhorn_{jk} = \dfrac{\sum\limits_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum\limits_{i=2}^{N} (N-i-1)}
 $$
 
 That is, the weighted average of Horn distances calculated for each taxonomic level. Lower taxonomic levels are weighted more than higher taxonomic levels. We omit the first level, Superkingdom, since its value is 'Bacteria' for all microbial members in the sample data. Therefore the weights across levels are as follows: Superkingdom: (_not included_), Phylum: 7, Class: 6, Order: 5, Family: 4, Genus: 3, Species: 2, ASV: 1.

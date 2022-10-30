@@ -36,7 +36,7 @@ Let $H_{ijk}$ represent the Horn index calculated at the taxonomic level
 $i$ for samples $j$ and $k$.
 
 $$
-Dtaxhorn_{jk} = \frac{\sum_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
+Dtaxhorn_{jk} = \dfrac{\sum\limits_{i=2}^{N} (N-i-1) Dhorn_{ijk}}{\sum\limits_{i=2}^{N} (N-i-1)}
 $$
 
 That is, the weighted average of Horn distances calculated for each
