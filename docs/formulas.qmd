@@ -20,10 +20,10 @@ Some are shown below, where $D_{jk}$ denotes the calculated distance between sam
 ```{r}
 values <- c("Euclidean"="$Deuc_{jk} = \\sqrt{\\sum_i (x_{ij}-x_{ik})^2}$",
             "Manhattan"="$Dman_{jk}=\\sum_i \\mid x_{ij}-x_{ik} \\mid$",
-            "Morisita"="$Dmor_{jk} =  1 - \\frac{2 \\sum_i x_{ij} x_{ik}}{(\\lambda_j +
+            "Morisita"="$Dmor_{jk} =  1 - \\dfrac{2 \\sum_i x_{ij} x_{ik}}{(\\lambda_j +
               \\lambda_k) \\sum_i x_{ij} \\sum_i
-              x_{ik}}$, where $\\lambda_j = \\frac{\\sum_i x_{ij} (x_{ij} - 1)}{\\sum_i x_{ij} \\sum_i (x_{ij} - 1)}$",
-            "Morisita-Horn"="$Dhorn_{jk} =  1 - \\frac{2 \\sum_i x_{ij} x_{ik}}{(\\lambda_j +
+              x_{ik}}$, where $\\lambda_j = \\dfrac{\\sum_i x_{ij} (x_{ij} - 1)}{\\sum_i x_{ij} \\sum_i (x_{ij} - 1)}$",
+            "Morisita-Horn"="$Dhorn_{jk} =  1 - \\dfrac{2 \\sum_i x_{ij} x_{ik}}{(\\lambda_j +
               \\lambda_k) \\sum_i x_{ij} \\sum_i
               x_{ik}}$, where $\\lambda_j = \\sum_i {x_{ij}}^2/(\\sum_i x_{ij})^2$")
 tbl <- tibble("Distance Metric"=names(values),'Definition'=values)
@@ -34,7 +34,7 @@ kable(tbl)
 Other metrics calculate beta diversity by examining genetic related-ness among microbial members. Unifrac calculates beta-diversity distance between two populations using a phylogenetic tree, where $l_n$ represents the length between node $n$ and its parent, and $X_{nj}$ and $X_{nk}$ are indicators (0 or 1) as descendants of node $n$ are absent or present in samples $j$ and $k$, respectively.
 
 ```{r}
-values2 <- c("Unweighted Unifrac"="$Dunifrac_{jk} = \\frac{\\sum_n l_n \\mid A_n - B_n \\mid}{\\sum_n l_n \\max(X_{nj}, X_{nk})}$")
+values2 <- c("Unweighted Unifrac"="$Dunifrac_{jk} = \\dfrac{\\sum_n l_n \\mid A_n - B_n \\mid}{\\sum_n l_n \\max(X_{nj}, X_{nk})}$")
 tbl2 <- tibble("Distance Metric"=names(values2),'Definition'=values2)
 
 kable(tbl2)
