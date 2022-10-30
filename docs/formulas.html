@@ -76,25 +76,25 @@ ul.task-list{list-style: none;}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Euclidean</td>
-<td style="text-align: left;"><span class="math inline">\(\mathrm{Deuc}_{jk} = \sqrt{\sum_i (x_{ij}-x_{ik})^2}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\textrm{Deuc}_{jk} = \sqrt{\sum_i (x_{ij}-x_{ik})^2}\)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Manhattan</td>
-<td style="text-align: left;"><span class="math inline">\(\mathrm{Dman}_{jk}=\sum_i \mid x_{ij}-x_{ik} \mid\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\textrm{Dman}_{jk}=\sum_i \mid x_{ij}-x_{ik} \mid\)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Morisita</td>
-<td style="text-align: left;"><span class="math inline">\(\mathrm{Dmor}_{jk} = 1 - \dfrac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}\)</span>, where <span class="math inline">\(\lambda_j = \dfrac{\sum_i x_{ij} (x_{ij} - 1)}{\sum_i x_{ij} \sum_i (x_{ij} - 1)}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\textrm{Dmor}_{jk} = 1 - \dfrac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}\)</span>, where <span class="math inline">\(\lambda_j = \dfrac{\sum_i x_{ij} (x_{ij} - 1)}{\sum_i x_{ij} \sum_i (x_{ij} - 1)}\)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Morisita-Horn</td>
-<td style="text-align: left;"><span class="math inline">\(\mathrm{Dhorn}_{jk} = 1 - \dfrac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}\)</span>, where <span class="math inline">\(\lambda_j = \sum_i {x_{ij}}^2/(\sum_i x_{ij})^2\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\textrm{Dhorn}_{jk} = 1 - \dfrac{2 \sum_i x_{ij} x_{ik}}{(\lambda_j +  \lambda_k) \sum_i x_{ij} \sum_i  x_{ik}}\)</span>, where <span class="math inline">\(\lambda_j = \sum_i {x_{ij}}^2/(\sum_i x_{ij})^2\)</span></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p>Other metrics calculate beta diversity by examining genetic relatedness among microbial members. Unifrac calculates beta-diversity distance between two populations using a phylogenetic tree, where <span class="math inline">\(l_n\)</span> represents the length between node <span class="math inline">\(n\)</span> and its parent, and <span class="math inline">\(X_{nj}\)</span> and <span class="math inline">\(X_{nk}\)</span> are indicators (0 or 1) as descendants of node <span class="math inline">\(n\)</span> are absent or present in samples <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>, respectively.</p>
+<p>Other metrics calculate beta diversity by examining genetic related-ness among microbial members. Unifrac calculates beta-diversity distance between two populations using a phylogenetic tree, where <span class="math inline">\(l_n\)</span> represents the length between node <span class="math inline">\(n\)</span> and its parent, and <span class="math inline">\(X_{nj}\)</span> and <span class="math inline">\(X_{nk}\)</span> are indicators (0 or 1) as descendants of node <span class="math inline">\(n\)</span> are absent or present in samples <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>, respectively.</p>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
@@ -111,17 +111,17 @@ ul.task-list{list-style: none;}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Unweighted Unifrac</td>
-<td style="text-align: left;"><span class="math inline">\(\mathrm{Dunifrac}_{jk} = \dfrac{\sum_n l_n \mid A_n - B_n \mid}{\sum_n l_n \max(X_{nj}, X_{nk})}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\textrm{Dunifrac}_{jk} = \dfrac{\sum_n l_n \mid A_n - B_n \mid}{\sum_n l_n \max(X_{nj}, X_{nk})}\)</span></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>There are limitations with all of the above metrics.</p>
-<p>We used Horn index to calculate <span class="math inline">\(\mathrm{Dhorn}_{jk}\)</span>, representing the Horn calculation across all taxonomic levels</p>
+<p>We used Horn index to calculate <span class="math inline">\(\textrm{Dhorn}_{jk}\)</span>, representing the Horn calculation across all taxonomic levels</p>
 <p>Let <span class="math inline">\(H_{ijk}\)</span> represent the Horn index calculated at the taxonomic level <span class="math inline">\(i\)</span> for samples <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span>.</p>
 <p><span class="math display">\[
-\mathrm{Dtaxhorn}_{jk} = \dfrac{\sum_{i=2}^{N} (N-i-1) \mathrm{Dhorn}_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
+\textrm{Dtaxhorn}_{jk} = \dfrac{\sum_{i=2}^{N} (N-i-1) \textrm{Dhorn}_{ijk}}{\sum_{i=2}^{N} (N-i-1)}
 \]</span></p>
 <p>That is, the weighted average of Horn distances calculated for each taxonomic level. Lower taxonomic levels are weighted more than higher taxonomic levels. We omit the first level, Superkingdom, since its value is ‘Bacteria’ for all microbial members in the sample data. Therefore the weights across levels are as follows: Superkingdom: 0, Phylum: 7, Class: 6, Order: 5, Family: 4, Genus: 3, Species: 2, ASV: 1.</p>
 
