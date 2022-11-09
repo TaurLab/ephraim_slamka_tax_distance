@@ -148,7 +148,6 @@ get.taxdist <- function(phy,fn=mean,method="horn",show.work=FALSE) {
 
 view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
   # by.group <- "pt.day"
-  
   hc <- hclust(dist)
   tr <- as.phylo(hc)
   gt <- ggtree(tr) %<+% get.samp(.phy)
@@ -191,7 +190,7 @@ view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
     scale_x_reverse() +
     coord_flip(ylim=xlim,expand=FALSE) +
     ggtitle(title)
-  g.hclust
   
-  gg.stack(g.hclust,g.groups,g.tax,heights=c(3,1,4),align.xlim=FALSE,as.gtable = TRUE)
+  
+  gg.stack(g.hclust,g.groups,g.tax,heights=c(1.5,1,4),align.xlim=FALSE,as.gtable = TRUE)
 }

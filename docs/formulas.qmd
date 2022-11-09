@@ -1,6 +1,6 @@
 ---
 title: "formulas"
-format: gfm
+format: html
 editor: visual
 execute: 
   echo: false
