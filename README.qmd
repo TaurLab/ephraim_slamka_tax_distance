@@ -136,3 +136,4 @@ For example, note how samples dominated by *Enterococcus* more naturally cluster
 #| out-width: 100%
 grid.arrange(g.hc.taxhorn.weightedmean)
 ```
+
