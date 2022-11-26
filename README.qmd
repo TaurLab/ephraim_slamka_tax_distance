@@ -17,12 +17,11 @@ We examined `r nrow(s)` samples, collected from a healthy volunteer (`HV`), and 
 
 ```{r}
 #| tbl-cap: Subjects and number of samples
-
 tbl <- s %>% group_by(pt) %>% summarize(n.samples=n())
 knitr::kable(tbl)
 ```
 
-Each subject's samples were collected over several different days, but more than one sample was sometimes taken per day. It should be noted that some samples were also sequenced multiple times.
+Each subject's samples were collected over several different days, but more than one sample was sometimes taken per day (total \`r n_distinct(s\$sample.id)\`). It should be noted that some samples were also sequenced multiple times.
 
 ```{r}
 #| out-width: 100%
