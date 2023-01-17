@@ -12,6 +12,7 @@ library(ape) #used to manipulate trees
 library(tidyverse)
 library(yingtools2) #ying's suite of data tools
 
+setwd(here::here())
 rm(list=ls())
 phy <- readRDS("data/mock_phylo_compact.rds")
 source("R/functions.R")
@@ -190,18 +191,13 @@ glist <- get.samp(phy) %>% group_by(pt) %>%
       ggtitle(str_glue("subject: {pt} / metric: {metric}"))
   },.keep=TRUE)
 
+glist[[1]]
+
 # pdf("plots/mock_metrics.pdf",width=34,height=17)
 # glist
 # dev.off()
 # shell.exec(normalizePath("plots/mock_metrics.pdf"))
 
-s <- get.samp(phy,stats=T)
-s$InvSimpson %>% range
-
-
-
-sample_sums(phy) %>% sum() %>% pretty_number() %>% copy.to.clipboard()
-phy 
 
 # view some of the pairs to get an idea ----------------------------------------------------------
 
@@ -253,7 +249,6 @@ g.sameday.sample <- ggplot(otu.sameday,aes(x=sample,y=pctseqs,fill=Species)) +
 # g.sameday.sample
 # ggsave("plots/g.same.sample.pdf",g.sameday.sample,width=15,height=8)
 # shell.exec("plots/g.same.sample.pdf")
-
 
 
 # view all resequenced samples ----------------------------------------------------------
@@ -344,23 +339,22 @@ vlist <- list(
 
 # do.call(grid.arrange,vlist)
 
-pdf("violin_compare.pdf",width=6,height=16)
-gg.stack(
-  g.v.bray,
-  g.v.euclidean,
-  g.v.horn,
-  g.v.unifrac,
-  g.v.taxhorn.wnsk1,
-  adjust.themes = FALSE,
-  newpage = FALSE
-)
-dev.off()
-shell.exec("violin_compare.pdf")
+# pdf("violin_compare.pdf",width=6,height=16)
+# gg.stack(
+#   g.v.bray,
+#   g.v.euclidean,
+#   g.v.horn,
+#   g.v.unifrac,
+#   g.v.taxhorn.wnsk1,
+#   adjust.themes = FALSE,
+#   newpage = FALSE
+# )
+# dev.off()
+# shell.exec("violin_compare.pdf")
 
 # mg <- marrangeGrob(vlist,ncol=3,nrow=3)
 # ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
 # shell.exec(normalizePath("plots/violin_compare_groups.pdf"))
-
 
 # pca of samples ---------------------------------------------------------------------
 
@@ -405,21 +399,21 @@ g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,.phy=physub,title="taxhorn.me
 g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,.phy=physub,title="taxhorn.weightedmean")
 g.hc.wnsk1
 g.hc.taxhorn.mean
-pdf("compare.pdf",height=16,width=17)
-grid.arrange(g.hc.euclidean,
-             g.hc.horn,
-             g.hc.wnsk1,
-             g.hc.taxhorn.mean,
-             ncol=1)
-dev.off()
-
-shell.exec("compare.pdf")
-
-
+# pdf("compare.pdf",height=16,width=17)
+# grid.arrange(g.hc.euclidean,
+#              g.hc.horn,
+#              g.hc.wnsk1,
+#              g.hc.taxhorn.mean,
+#              ncol=1)
+# dev.off()
+# 
+# shell.exec("compare.pdf")
 
 
-grid.newpage()
-grid.draw(g.hc.manhattan)
+
+
+# grid.newpage()
+# grid.draw(g.hc.manhattan)
 
 # g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean",label.pct.cutoff = 0.1)
 # grid.draw(g.hc.taxhorn.weightedmean)
@@ -441,3 +435,164 @@ grid.draw(g.hc.manhattan)
 
 # ggsave("plots/hclust_compare.pdf",mg,width=20,height=12)
 # shell.exec(normalizePath("plots/hclust_compare.pdf"))
+
+
+
+
+
+# view stacked samples (slide) --------------------------------------------
+
+
+
+s <- get.samp(phy) %>%
+  group_by(pt) %>% 
+  mutate(pos=row_number(day),
+         status=coalesce_indicators(has.reseq,has.sameday,else.value="none",first.hit.only = TRUE),
+         pt.label=recode2(pt,c("HV"="healthy volunteer", "PT1"="Patient 1", "PT2"="Patient 2", "PT3"="Patient 3"))) %>%
+  ungroup()
+
+s.dups <- s %>% 
+  filter(status!="none")
+
+
+otu <- get.otu.melt(phy) %>% tax.plot(data=TRUE) %>%
+  left_join_replace(select(s,sample,pos,status,pt.label),by="sample")
+pal <- get.tax.palette(otu)
+legend <- get.tax.legend(fontsize=4) %>%  
+  gtable::gtable_add_rows(unit(9,"null")) %>%  
+  gtable::gtable_add_rows(unit(9,"null"),pos=0)
+
+
+g.tax <- ggplot() +
+  expand_limits(y=-0.05) +
+  geom_col(data=otu,aes(x=pos,y=pctseqs,fill=Species),show.legend = FALSE) +
+  geom_text(data=s,aes(x=pos,y=0,label=day),vjust=1.08,size=2.5) +
+  scale_fill_manual(values=pal)  +
+  scale_x_continuous("Time (day)") +
+  scale_y_continuous("Bacterial Relative Abundance",labels = scales::percent) +
+  facet_grid(pt.label ~ .,) +
+  theme(legend.position = c(0.85,0.93),
+        axis.text.x=element_blank(),
+        axis.ticks = element_blank())
+
+g.dups <- list(
+  geom_col(data=s.dups,aes(x=pos,y=1,color=status),fill=NA,size=1.5,show.legend=FALSE),
+  geom_path(data=s,aes(x=pos,y=1.05,group=pt.day,color=status),size=1.5),
+  scale_color_manual(values=c("has.reseq"="blue", "has.sameday"="red"),
+                     labels=c("has.reseq"="Same sample, resequenced", "has.sameday"="Distinct samples on same day"))
+)
+
+
+png("plots/taxdata.png",height=7,width=14,units="in",res=150)
+grid.arrange(
+  g.tax,
+  legend,
+  nrow=1,
+  widths=c(3,1))
+dev.off()
+
+# shell.exec("plots/taxdata.png")
+
+
+
+png("plots/taxdata2.png",height=8,width=16,units="in",res=150)
+grid.arrange(
+  g.tax+g.dups,
+  legend,
+  nrow=1,
+  widths=c(3,1))
+dev.off()
+
+# shell.exec("plots/taxdata2.png")
+
+
+
+# adjacent only
+adj <- s %>% group_by(pt) %>%
+  arrange(pt,pos) %>%
+  mutate(sample1=sample,
+         sample2=lead(sample),
+         pos1=pos,
+         pos2=lead(pos)) %>%
+  ungroup() %>% 
+  select(pt,pt.label,sample1,sample2,pos1,pos2) %>% 
+  filter(!is.na(sample2)) %>%
+  mutate(adjacent=TRUE,
+         mid.pos=midpoint(pos1,pos2))
+
+pairs.euclidean <- dist.euclidean %>%
+  get.pairwise() %>%
+  rename(euclidean.dist=dist)
+pairs.bray <- dist.bray %>%
+  get.pairwise() %>%
+  rename(bray.dist=dist)
+pairs.horn <- dist.horn %>%
+  get.pairwise() %>%
+  rename(horn.dist=dist)
+pairs.unifrac <- dist.unifrac %>%
+  get.pairwise() %>%
+  rename(unifrac.dist=dist)
+pairs.taxhorn <- dist.taxhorn.wnsk1 %>%
+  get.pairwise() %>%
+  rename(taxhorn.dist=dist)
+
+pairs2  <- pairs %>%
+  inner_join(pairs.euclidean,by = c("sample1", "sample2")) %>% 
+  inner_join(pairs.bray,by = c("sample1", "sample2")) %>% 
+  inner_join(pairs.horn,by = c("sample1", "sample2")) %>% 
+  inner_join(pairs.unifrac,by = c("sample1", "sample2")) %>% 
+  inner_join(pairs.taxhorn,by = c("sample1", "sample2")) %>%
+  mutate(pos1=s$pos[match(sample1,s$sample)],
+         pos2=s$pos[match(sample2,s$sample)],
+         adjacent=(pt1==pt2) & (abs(pos1-pos2)==1))
+
+
+adj.pairs2 <- pairs2 %>%
+  filter(adjacent) %>%
+  mutate(mid.pos=(pos1+pos2)/2,
+         pt.label=recode2(pt1,c("HV"="healthy volunteer", "PT1"="Patient 1", "PT2"="Patient 2", "PT3"="Patient 3")))
+
+adj.plot <- function(col=bray.dist,y=1.1,color="steelblue",lbl=NULL) {
+  col <- enquo(col)
+  lbl <- as_label(col)
+  list(
+    geom_point(data=adj.pairs2,aes(x=mid.pos,y=y,size=!!col),color=color),
+    geom_text(data=adj.pairs2,aes(x=mid.pos,y=y,label=pretty_number(!!col)),angle=90)
+  )
+}
+
+
+g.tax +
+  expand_limits(y=1.2) +
+  adj.plot(bray.dist,y=1.1,color="steelblue") +
+  
+  adj.plot(unifrac.dist,y=1.3,color="red") +
+  # adj.plot(horn.dist,y=1.9,color="yellow") +
+  adj.plot(taxhorn.dist,y=1.5,color="green") +
+  scale_size_continuous(range=c(0.5,10))
+
+
+
+
+# qrcode ------------------------------------------------------------------
+
+
+
+library(qrcode)
+code <- qr_code("https://github.com/TaurLab/ephraim_slamka_tax_distance")
+
+png("plots/qrcode.png")
+plot(code)
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+

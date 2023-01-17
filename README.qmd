@@ -1,7 +1,7 @@
 ---
 title: "Slamka taxdist project"
-format:  gfm  #change to gfm
-editor: visual
+format:  gfm
+editor: source
 execute: 
   echo: false
   warning: false
@@ -21,7 +21,7 @@ tbl <- s %>% group_by(pt) %>% summarize(n.samples=n())
 knitr::kable(tbl)
 ```
 
-Each subject's samples were collected over several different days, but more than one sample was sometimes taken per day (total \`r n_distinct(s\$sample.id)\`). It should be noted that some samples were also sequenced multiple times.
+Each subject's samples were collected over several different days, but more than one sample was sometimes taken per day (total `r n_distinct(s$sample.id)`). It should be noted that some samples were also sequenced multiple times.
 
 ```{r}
 #| out-width: 100%
@@ -135,4 +135,3 @@ For example, note how samples dominated by *Enterococcus* more naturally cluster
 #| out-width: 100%
 grid.arrange(g.hc.taxhorn.weightedmean)
 ```
-
