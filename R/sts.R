@@ -386,7 +386,7 @@ view.pca <- function(metric) {
 # hclust of samples -------------------------------------------------------
 
 
-physub <- phy %>% subset_samples(pt!="PT3" & day<100)
+physub <- phy %>% subset_samples(pt!="PT3" &  day<100)
 
 g.hc.wnsk1<-view.hclust(dist.taxhorn.wnsk1,.phy=physub,title="Taxhorn")
 g.hc.manhattan <- view.hclust(dist.manhattan,.phy=physub,title="manhattan")
@@ -397,8 +397,28 @@ g.hc.unifrac <- view.hclust(dist.unifrac,.phy=physub,title="unifrac")
 g.hc.wunifrac <- view.hclust(dist.wunifrac,.phy=physub,title="wunifrac")
 g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,.phy=physub,title="taxhorn.mean")
 g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,.phy=physub,title="taxhorn.weightedmean")
-g.hc.wnsk1
-g.hc.taxhorn.mean
+
+
+
+grid.draw(g.hc.wnsk1)
+
+g.hc.wnsk1<-view.hclust2(dist.taxhorn.wnsk1,.phy=physub,title="Taxhorn")
+g.hc.manhattan <- view.hclust(dist.manhattan,.phy=physub,title="manhattan")
+g.hc.bray <- view.hclust(dist.bray,.phy=physub,title="bray")
+g.hc.euclidean <- view.hclust(dist.euclidean,.phy=physub,title="Euclidean")
+g.hc.horn <- view.hclust(dist.horn,.phy=physub,title="Horn-Morisita")
+g.hc.unifrac <- view.hclust(dist.unifrac,.phy=physub,title="unifrac")
+g.hc.wunifrac <- view.hclust(dist.wunifrac,.phy=physub,title="wunifrac")
+g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,.phy=physub,title="taxhorn.mean")
+g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,.phy=physub,title="taxhorn.weightedmean")
+
+
+grid.draw(g.hc.wnsk1)
+
+grid.draw(g.hc.unifrac)
+
+grid.draw(g.hc.euclidean)
+
 # pdf("compare.pdf",height=16,width=17)
 # grid.arrange(g.hc.euclidean,
 #              g.hc.horn,

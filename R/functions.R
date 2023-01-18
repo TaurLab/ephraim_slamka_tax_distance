@@ -199,3 +199,10 @@ view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
   # gg.stack(g.hclust,g.groups,g.tax,heights=c(1.5,1,4),align.xlim=FALSE,as.gtable = TRUE)
   gg.stack(g.hclust,g.tax,heights=c(1.5,4),align.xlim=FALSE,as.gtable = TRUE)
 }
+
+
+
+
+
+
+
