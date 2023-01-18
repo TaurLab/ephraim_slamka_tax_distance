@@ -18,6 +18,7 @@ phy <- readRDS("data/mock_phylo_compact.rds")
 source("R/functions.R")
 s <- get.samp(phy)
 
+
 # assess all pairwise combinations and classify as one of 4 groups.
 s1 <- get.samp(phy) %>% select(sample,pt,pt.day,pt.day.samp) %>% rename_with(~paste0(.,"1"))
 s2 <- get.samp(phy) %>% select(sample,pt,pt.day,pt.day.samp) %>% rename_with(~paste0(.,"2"))
@@ -337,6 +338,10 @@ vlist <- list(
   g.v.taxhorn.wnsk1,
   g.v.taxhorn.wnsk2)
 
+
+
+
+
 # do.call(grid.arrange,vlist)
 
 # pdf("violin_compare.pdf",width=6,height=16)
@@ -400,24 +405,7 @@ g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,.phy=physub,t
 
 
 
-grid.draw(g.hc.wnsk1)
 
-g.hc.wnsk1<-view.hclust2(dist.taxhorn.wnsk1,.phy=physub,title="Taxhorn")
-g.hc.manhattan <- view.hclust(dist.manhattan,.phy=physub,title="manhattan")
-g.hc.bray <- view.hclust(dist.bray,.phy=physub,title="bray")
-g.hc.euclidean <- view.hclust(dist.euclidean,.phy=physub,title="Euclidean")
-g.hc.horn <- view.hclust(dist.horn,.phy=physub,title="Horn-Morisita")
-g.hc.unifrac <- view.hclust(dist.unifrac,.phy=physub,title="unifrac")
-g.hc.wunifrac <- view.hclust(dist.wunifrac,.phy=physub,title="wunifrac")
-g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,.phy=physub,title="taxhorn.mean")
-g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,.phy=physub,title="taxhorn.weightedmean")
-
-
-grid.draw(g.hc.wnsk1)
-
-grid.draw(g.hc.unifrac)
-
-grid.draw(g.hc.euclidean)
 
 # pdf("compare.pdf",height=16,width=17)
 # grid.arrange(g.hc.euclidean,
@@ -475,7 +463,10 @@ s.dups <- s %>%
   filter(status!="none")
 
 
-otu <- get.otu.melt(phy) %>% tax.plot(data=TRUE) %>%
+otu <- phy %>% phy.collapse() %>% 
+  get.otu.melt() %>% 
+  tax.plot(data=TRUE,label.pct.cutoff = 0.5) %>%
+  mutate(tax.label=sub(" ","\n",tax.label)) %>% 
   left_join_replace(select(s,sample,pos,status,pt.label),by="sample")
 pal <- get.tax.palette(otu)
 legend <- get.tax.legend(fontsize=4) %>%  
@@ -486,10 +477,11 @@ legend <- get.tax.legend(fontsize=4) %>%
 g.tax <- ggplot() +
   expand_limits(y=-0.05) +
   geom_col(data=otu,aes(x=pos,y=pctseqs,fill=Species),show.legend = FALSE) +
+  geom_text(data=otu,aes(x=pos,y=y.text,label=tax.label),size=2.5,angle=-90,lineheight=0.75) +
   geom_text(data=s,aes(x=pos,y=0,label=day),vjust=1.08,size=2.5) +
   scale_fill_manual(values=pal)  +
   scale_x_continuous("Time (day)") +
-  scale_y_continuous("Bacterial Relative Abundance",labels = scales::percent) +
+  scale_y_continuous("Bacterial Relative Abundance",labels = scales::percent,breaks=c(0,0.5,1)) +
   facet_grid(pt.label ~ .,) +
   theme(legend.position = c(0.85,0.93),
         axis.text.x=element_blank(),
@@ -498,7 +490,7 @@ g.tax <- ggplot() +
 g.dups <- list(
   geom_col(data=s.dups,aes(x=pos,y=1,color=status),fill=NA,size=1.5,show.legend=FALSE),
   geom_path(data=s,aes(x=pos,y=1.05,group=pt.day,color=status),size=1.5),
-  scale_color_manual(values=c("has.reseq"="blue", "has.sameday"="red"),
+  scale_color_manual("Similar Samples",values=c("has.reseq"="blue", "has.sameday"="red"),
                      labels=c("has.reseq"="Same sample, resequenced", "has.sameday"="Distinct samples on same day"))
 )
 
@@ -511,7 +503,7 @@ grid.arrange(
   widths=c(3,1))
 dev.off()
 
-# shell.exec("plots/taxdata.png")
+shell.exec("plots/taxdata.png")
 
 
 
@@ -525,6 +517,55 @@ dev.off()
 
 # shell.exec("plots/taxdata2.png")
 
+
+
+# adjacent dists ----------------------------------------------------------
+
+
+
+physub <- phy %>% subset_samples(pt %in% c("HV","PT1"))
+
+s <- get.samp(physub) %>%
+  group_by(pt) %>% 
+  mutate(pos=row_number(day),
+         status=coalesce_indicators(has.reseq,has.sameday,else.value="none",first.hit.only = TRUE),
+         pt.label=recode2(pt,c("HV"="healthy volunteer", "PT1"="Patient 1", "PT2"="Patient 2", "PT3"="Patient 3"))) %>%
+  ungroup()
+
+s.dups <- s %>% 
+  filter(status!="none")
+
+
+otu <- physub %>% phy.collapse() %>% 
+  get.otu.melt() %>% 
+  tax.plot(data=TRUE,label.pct.cutoff = 0.5) %>%
+  mutate(tax.label=sub(" ","\n",tax.label)) %>% 
+  left_join_replace(select(s,sample,pos,status,pt.label),by="sample")
+pal <- get.tax.palette(otu)
+legend <- get.tax.legend(fontsize=4) %>%  
+  gtable::gtable_add_rows(unit(9,"null")) %>%  
+  gtable::gtable_add_rows(unit(9,"null"),pos=0)
+
+
+g.tax <- ggplot() +
+  expand_limits(y=-0.05) +
+  geom_col(data=otu,aes(x=pos,y=pctseqs,fill=Species),show.legend = FALSE) +
+  geom_text(data=otu,aes(x=pos,y=y.text,label=tax.label),size=2.5,angle=-90,lineheight=0.75) +
+  geom_text(data=s,aes(x=pos,y=0,label=day),vjust=1.08,size=2.5) +
+  scale_fill_manual(values=pal)  +
+  scale_x_continuous("Time (day)") +
+  scale_y_continuous("Bacterial Relative Abundance",labels = scales::percent,breaks=c(0,0.5,1)) +
+  facet_grid(pt.label ~ .,) +
+  theme(legend.position = c(0.85,0.93),
+        axis.text.x=element_blank(),
+        axis.ticks = element_blank())
+
+g.dups <- list(
+  geom_col(data=s.dups,aes(x=pos,y=1,color=status),fill=NA,size=1.5,show.legend=FALSE),
+  geom_path(data=s,aes(x=pos,y=1.05,group=pt.day,color=status),size=1.5),
+  scale_color_manual("Similar samples",values=c("has.reseq"="blue", "has.sameday"="red"),
+                     labels=c("has.reseq"="Same sample, resequenced", "has.sameday"="Distinct samples on same day"))
+)
 
 
 # adjacent only
@@ -572,30 +613,148 @@ adj.pairs2 <- pairs2 %>%
   mutate(mid.pos=(pos1+pos2)/2,
          pt.label=recode2(pt1,c("HV"="healthy volunteer", "PT1"="Patient 1", "PT2"="Patient 2", "PT3"="Patient 3")))
 
-adj.plot <- function(col=bray.dist,y=1.1,color="steelblue",lbl=NULL) {
+adj.plot <- function(col=bray.dist,y=1.1,color="steelblue",lbl=NULL,size=3) {
   col <- enquo(col)
-  lbl <- as_label(col)
+  if (is.null(lbl)){
+    lbl <- as_label(col)  
+  }
   list(
-    geom_point(data=adj.pairs2,aes(x=mid.pos,y=y,size=!!col),color=color),
-    geom_text(data=adj.pairs2,aes(x=mid.pos,y=y,label=pretty_number(!!col)),angle=90)
+    expand_limits(size=c(0,1)),
+    geom_point(data=adj.pairs2,aes(x=mid.pos,y=y,size=!!col),color=color,show.legend = FALSE),
+    geom_text(data=adj.pairs2,aes(x=mid.pos,y=y,label=pretty_number(!!col)),size=size,check_overlap = TRUE),
+    annotate("text",x=-1,y=y,label=lbl)
   )
 }
 
-
-g.tax +
-  expand_limits(y=1.2) +
-  adj.plot(bray.dist,y=1.1,color="steelblue") +
-  
-  adj.plot(unifrac.dist,y=1.3,color="red") +
-  # adj.plot(horn.dist,y=1.9,color="yellow") +
-  adj.plot(taxhorn.dist,y=1.5,color="green") +
+png("plots/adj_dist_compare.png",width=14,height=8,units = "in",res=150)
+g.tax + g.dups + 
+  expand_limits(y=1.6) +
+  adj.plot(bray.dist,y=1.1,color="steelblue",lbl="Bray-Curtis") +
+  adj.plot(unifrac.dist,y=1.3,color="darkolivegreen3",lbl="Unifrac") +
+  # adj.plot(taxhorn.dist,y=1.5,color="red",lbl="taxHorn") +
   scale_size_continuous(range=c(0.5,10))
+dev.off()
+shell.exec("plots/adj_dist_compare.png")
 
 
+png("plots/adj_dist_compare2.png",width=14,height=8,units = "in",res=150)
+g.tax + g.dups + 
+  expand_limits(y=1.6) +
+  adj.plot(bray.dist,y=1.1,color="steelblue",lbl="Bray-Curtis") +
+  adj.plot(unifrac.dist,y=1.3,color="darkolivegreen3",lbl="Unifrac") +
+  adj.plot(taxhorn.dist,y=1.5,color="red",lbl="taxHorn") +
+  scale_size_continuous(range=c(0.5,10))
+dev.off()
+
+
+shell.exec("plots/adj_dist_compare2.png")
+
+
+
+# hclust slide ------------------------------------------------------------
+
+
+view.hclust2 <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
+  # by.group <- "pt.day"
+  
+  hc <- hclust(dist)
+  tr <- as.phylo(hc)
+  
+  droptips <- setdiff(tr$tip.label,sample_names(.phy))
+  tr <- drop.tip(tr,droptips)
+  gt <- ggtree(tr) %<+% get.samp(.phy)
+  gd <- gt$data
+  pad <- (max(gd$x)-min(gd$x)) * 0.025
+  ylim <- range(gd$x) + c(0,pad)
+  s.dups.hc <- gd %>% filter(has.sameday) %>%
+    arrange(y) %>%
+    mutate(lbl=ifelse(has.sameday,pt.day,NA_character_),
+           row=get.row(y,y,row=pt.day,min.gap=1)) 
+
+  map <- gd %>% filter(isTip) %>%
+    select(sample=label,x,y)
+  xlim <- range(map$y) + c(-0.5,0.5)
+  otu <- .phy %>% get.otu.melt() %>%
+    left_join(map,by="sample") %>%
+    tax.plot(data=TRUE,label.pct.cutoff = label.pct.cutoff) %>%
+    mutate(tax.label=sub(" ","\n",tax.label))
+  pal <- get.yt.palette2(otu)
+  
+  g.tax <- ggplot() + 
+    geom_col(data=otu,aes(x=y,y=pctseqs,fill=Species),show.legend=FALSE) +
+    geom_text(data=otu,aes(x=y,y=y.text,label=tax.label),angle=-90,lineheight=0.75) +
+    scale_fill_manual(values=pal) +
+    coord_cartesian(xlim=xlim,expand=FALSE) +
+    theme(axis.text = element_blank(),
+          axis.title.y=element_blank()) +
+    xlab("Sample")
+  # +  
+  #   geom_path(data=s.dups.hc,aes(x=y,y=1.02,group=pt.day,color=has.reseq),size=1) +
+  #   geom_point(data=s.dups.hc,aes(x=y,y=1.02,group=pt.day,color=has.reseq)) +
+  #   # geom_path(data=s.dups.hc,aes(x=y,y=-0.02,group=pt.day,color=has.reseq),size=1) +
+  #   scale_color_manual("Similar Samples",values=c("TRUE"="red","FALSE"="blue"),
+  #                      label=c("TRUE"="Same sample, resequenced","FALSE"="Distinct samples on same day"))
+  
+  row.range <- range(s.dups.hc$row) + c(-0.5,0.5)
+  g.groups <- ggplot() + 
+    geom_path(data=s.dups.hc,aes(x=y,y=row,group=pt.day,color=has.reseq)) + 
+    geom_point(data=s.dups.hc,aes(x=y,y=row,color=has.reseq)) +
+    geom_segment(data=map,aes(x=y,xend=y,y=row.range[1],yend=row.range[2]),alpha=0.35) +
+    scale_color_manual("Similar Samples",values=c("TRUE"="red","FALSE"="blue"),
+                       label=c("TRUE"="Sample sample, resequenced","FALSE"="Distinct samples on same day")) +
+    coord_cartesian(xlim=xlim,expand=FALSE) + expand_limits(y=row.range) + theme_void()
+  
+  g.hclust <- gt + 
+    expand_limits(x=ylim) +
+    geom_point2(data=gd,aes(subset=isTip,color=pt),alpha=0.75) +
+    # geom_point2(data=gd,aes(subset=isTip & has.reseq,size=has.sameday),shape=1) +
+    # geom_text2(data=gd,aes(subset=isTip & has.sameday, label=pt.day.samp, size=has.sameday),angle=-90,hjust=-0.05,size=3) +
+    scale_x_reverse() +
+    coord_flip(ylim=xlim,expand=FALSE) +
+    ggtitle(title)
+  
+  
+  gg.stack(g.hclust,g.groups,g.tax,heights=c(4,1,8),align.xlim=FALSE,as.gtable = TRUE)
+  # gg.stack(g.hclust,g.tax,heights=c(1.5,4),align.xlim=FALSE,as.gtable = TRUE)
+}
+
+
+
+physub <- phy %>% subset_samples(pt %in% c("HV","PT1"))
+
+g.hc.wnsk1 <- view.hclust2(dist.taxhorn.wnsk1,.phy=physub,title="taxHorn")
+g.hc.bray <- view.hclust2(dist.bray,.phy=physub,title="Bray-Curtis")
+g.hc.manhattan <- view.hclust2(dist.manhattan,.phy=physub,title="manhattan")
+g.hc.euclidean <- view.hclust2(dist.euclidean,.phy=physub,title="Euclidean")
+g.hc.horn <- view.hclust2(dist.horn,.phy=physub,title="Horn-Morisita")
+g.hc.unifrac <- view.hclust2(dist.unifrac,.phy=physub,title="unifrac")
+g.hc.wunifrac <- view.hclust2(dist.wunifrac,.phy=physub,title="wunifrac")
+
+grid.arrange(
+  # g.hc.bray,
+  g.hc.euclidean,
+  # g.hc.bray,
+  g.hc.wnsk1,ncol=1
+)
+
+
+
+pdf("plots/hclust_slide.pdf",width=17,height=10)
+grid.arrange(
+  g.hc.euclidean,
+  g.hc.wnsk1,ncol=1
+)
+dev.off()
+shell.exec("plots/hclust_slide.pdf")
+
+legend  <- get.tax.legend()
+pdf("plots/legend.pdf",width=4,height=5)
+grid.arrange(legend)
+dev.off()
+shell.exec("plots/legend.pdf")
 
 
 # qrcode ------------------------------------------------------------------
-
 
 
 library(qrcode)
@@ -609,6 +768,38 @@ dev.off()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+# distribution testing,  chisq test ----------------------------------------------------------
+
+
+xx <- pairs2 %>%
+  mutate(euclidean.dist=scales::rescale(euclidean.dist,to=c(0,1))) %>% 
+  pivot_longer(cols=ends_with("dist"),names_to="dist.metric",values_to="dist.value") %>%
+  mutate(dist.value.bin=cut2(dist.value,lower=c(0.25,0.5,0.75)))
+
+dists <- c("euclidean.dist", "bray.dist", "horn.dist", "unifrac.dist", "taxhorn.dist")
+
+yy <- combn(dists,2) %>% t() %>% as_tibble() %>%
+  mutate(res=map2(V1,V2,~{
+    # .x="euclidean.dist"
+    # .y="bray.dist"
+    sub <- xx %>% filter(dist.metric %in% c(.x,.y))
+    zz <- with(sub,chisq.test(dist.metric,dist.value.bin))
+    tibble(chisq.stat=zz$statistic,pval=zz$p.value)
+  })) %>% unnest(res)
+
+
+yy %>% dt()
 
 
 
