@@ -1,5 +1,5 @@
 #check to ssee if I should add steps for installing packages, maybe provide links for some? decide later
-
+#should I include all of the rejects?
 #install recquired packages
 library(ggplot2)
 library(base)
@@ -263,6 +263,41 @@ wnsk1<-function(x){
   weights<-length(set):1
   sum(set*weights)/sum(weights)
 }
+
+
+#custom distances
+dist.taxhorn.mean <- get.taxdist(phy,fn=mean,method="horn")
+dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
+
+dist.taxhorn.nsk<-get.taxdist(phy,fn=nsk,method="horn")
+dist.taxhorn.wnsk1<-get.taxdist(phy,fn=wnsk1,method="horn")
+
+
+# examine each pt's samples at different tax levels -------------------------------------------------
+
+# get a subset phyloseq and run plot.dist. 
+physub <- subset_samples(phy,pt=="HV")
+g.tyler.bray <- plot.dist(physub,"bray")
+g.tyler.bray
+g.tyler.horn <- plot.dist(physub,"horn")
+g.tyler.horn
+
+# to plot this for all subjects, create list of ggplots:
+glist <- get.samp(phy) %>% group_by(pt) %>%
+  group_map(~{
+    pt <- .x$pt[1]
+    metric <- "horn"
+    physub <- prune_samples(.x$sample,phy) %>% prune_unused_taxa()
+    plot.dist(physub, method=metric, sortby=c("pt","pt.day","pt.day.samp")) +
+      ggtitle(str_glue("subject: {pt} / metric: {metric}"))
+  },.keep=TRUE)
+
+pdf("plots/mock_metrics.pdf",width=34,height=17)
+glist
+dev.off()
+shell.exec(normalizePath("plots/mock_metrics.pdf"))
+
+
 
 
 
