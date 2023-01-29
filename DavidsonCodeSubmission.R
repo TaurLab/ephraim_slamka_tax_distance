@@ -12,6 +12,30 @@ library(ape) #used to manipulate trees
 library(tidyverse)
 library(yingtools2) #ying's suite of data tools
 
+#note: do I need to give them how to get this file, like, do they need to download it somehow?
+rm(list=ls())
+phy <- readRDS("data/mock_phylo_compact.rds")
+source("R/functions.R")
+s <- get.samp(phy)
+
+# assess all pairwise combinations and classify as one of 4 groups.
+s1 <- get.samp(phy) %>% select(sample,pt,pt.day,pt.day.samp) %>% rename_with(~paste0(.,"1"))
+s2 <- get.samp(phy) %>% select(sample,pt,pt.day,pt.day.samp) %>% rename_with(~paste0(.,"2"))
+pairs <- sample_names(phy) %>%
+  combn(2) %>% t() %>%
+  as_tibble() %>%
+  rename(sample1=V1,sample2=V2) %>%
+  left_join(s1,by="sample1") %>%
+  left_join(s2,by="sample2") %>%
+  mutate(status=case_when(
+    pt.day.samp1==pt.day.samp2 ~ "same pt \r\n day \r\n sample",
+    pt.day1==pt.day2 ~ "  same pt \r\n day \r\n (diff sample)",
+    pt1==pt2 ~ "  same pt \r\n (diff day/sample) ",
+    TRUE ~"  diff pt  ",
+  ))
+rm(s1,s2)
+
+
 # given a distance matrix, return a table of pairwise distances.
 # e.g.: dist(mtcars) %>% get.pairwise()
 get.pairwise <- function(dist,diag=TRUE) {
@@ -212,6 +236,33 @@ view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
 
 
 
+
+# most samples are from different pts
+pairs %>% count(status)
+
+# create various distances, including the customized ------------------------------------------------
+
+
+
+weighted.mean <- function(x) {
+  weights <- length(x):1
+  sum( x*weights ) / sum(weights)
+}
+
+# usual distances 
+
+dist.manhattan <- distance(phy,"manhattan")
+dist.bray <- distance(phy,"bray")
+dist.euclidean <- distance(phy,"euclidean")
+dist.horn <- distance(phy,"horn")
+dist.unifrac <- distance(phy,"unifrac")
+dist.wunifrac <- distance(phy,"wunifrac")
+
+wnsk1<-function(x){
+  set<-x[-1]
+  weights<-length(set):1
+  sum(set*weights)/sum(weights)
+}
 
 
 
