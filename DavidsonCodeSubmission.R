@@ -301,4 +301,203 @@ shell.exec(normalizePath("plots/mock_metrics.pdf"))
 
 
 
+#select 10 pairs from each comparison and show
+otu <- phy %>% get.otu.melt() %>%
+  tax.plot(data=TRUE)
+pal <- get.yt.palette2(otu)
+
+pairs.select <- pairs %>% 
+  group_by(status) %>% slice(1:10) %>% 
+  transmute(pair.id=row_number(),status,sample1,sample2) %>% 
+  ungroup() %>% 
+  pivot_longer(cols=c(sample1,sample2),values_to="sample") %>%
+  left_join(otu,by="sample")
+
+g.pairs.select <- 
+  ggplot(pairs.select,aes(x=name,y=pctseqs,fill=Species)) + geom_col(show.legend=FALSE) +
+  # geom_text(aes(y=y.text,label=tax.label),angle=-90) +
+  scale_fill_manual(values=pal) +
+  facet_grid(status~pair.id,scales="free_x",space="free_x")
+g.pairs.select
+
+pdf("plots/pairs.grouping.taxview.pdf",width=20,height=12)
+g.pairs.select
+dev.off()
+
+shell.exec(normalizePath("plots/pairs.grouping.taxview.pdf"))
+
+
+# view all resequenced samples ----------------------------------------------------------
+
+s.reseq <- s %>% group_by(pt.day.samp) %>%
+  filter(n()>1)
+
+otu.reseq <- phy %>% prune_samples(s.reseq$sample,.) %>%
+  get.otu.melt() %>%
+  tax.plot(data=TRUE)
+pal <- get.yt.palette2(otu.sameday)
+
+g.reseq.sample <- ggplot(otu.reseq,aes(x=sample,y=pctseqs,fill=Species)) +
+  geom_col(show.legend = FALSE) + 
+  geom_text(aes(y=y.text,label=tax.label),angle=-90) +
+  scale_fill_manual(values=pal) +
+  facet_grid(.~pt.day.samp,scales="free_x",space="free_x")
+
+g.reseq.sample
+
+ggsave("plots/g.all.reseq.pdf",g.reseq.sample,width=20,height=10)
+shell.exec(normalizePath("plots/g.all.reseq.pdf"))
+
+
+
+# view all same day samples (not same sample)-----------------------------------------------
+
+s.sameday <- s %>% 
+  group_by(pt.day.samp) %>%
+  slice(1) %>%
+  group_by(pt.day) %>%
+  filter(n()>1) %>%
+  ungroup()
+
+otu.sameday <- phy %>% prune_samples(s.sameday$sample,.) %>%
+  get.otu.melt() %>%
+  tax.plot(data=TRUE)
+pal <- get.yt.palette2(otu.sameday)
+
+g.sameday.sample <- ggplot(otu.sameday,aes(x=sample,y=pctseqs,fill=Species)) +
+  geom_col(show.legend = FALSE) + 
+  geom_text(aes(y=y.text,label=tax.label),angle=-90) +
+  scale_fill_manual(values=pal) +
+  facet_grid(.~pt.day,scales="free_x",space="free_x")
+g.sameday.sample
+ggsave("plots/g.same.sample.pdf",g.sameday.sample,width=15,height=8)
+shell.exec("plots/g.same.sample.pdf")
+
+
+# violin of distances -----------------------------------------------------
+
+#compare by group:
+
+
+view_violin <- function(dist,title) {
+  pairdata <- dist %>% get.pairwise() %>%
+    inner_join(pairs,by=c("sample1","sample2"))
+  ggplot(pairdata,aes(x=status,y=dist,fill=status)) + geom_violin(position = position_dodge(10)) +
+    geom_boxplot(alpha=0.1) + ggtitle(title) + expand_limits(y=c(0,1)) +
+    theme(legend.position= "none") 
+}
+
+g.v.manhattan <- view_violin(dist.manhattan,title="manhattan")
+g.v.bray <- view_violin(dist.bray,title="bray")
+g.v.euclidean <- view_violin(dist.euclidean,title="euclidean")
+g.v.horn <- view_violin(dist.horn,title="horn")
+g.v.unifrac <- view_violin(dist.unifrac,title="unifrac")
+g.v.wunifrac <- view_violin(dist.wunifrac,title="wunifrac")
+g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
+g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
+#g.v.taxhorn.aabthing <- view_violin(dist.taxhorn.aabthing, title="taxhorn.aabthing")
+#g.v.taxhorn.abthing<-view_violin(dist.taxhorn.abthing,title="taxhorn.abthing")
+#g.v.taxhorn.acthing<-view_violin(dist.taxhorn.acthing,title="taxhorn.acthing")
+#g.v.taxhorn.bthing<-view_violin(dist.taxhorn.bthing,title="taxhorn.bthing")
+#g.v.taxhorn.bdthing<-view_violin(dist.taxhorn.bdthing,title="taxhorn.bdthing")
+#g.v.taxhorn.bbthing<-view_violin(dist.taxhorn.bbthing,title="taxhorn.bbthing")
+#g.v.taxhorn.wnsk2<-view_violin(dist.taxhorn.wnsk2,title="taxhorn.wnsk2")
+
+g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk")
+#g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
+#g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
+vlist <- list( 
+  g.v.bray,
+  g.v.manhattan,
+  g.v.euclidean,
+  g.v.horn,
+  g.v.unifrac,
+  g.v.wunifrac,
+  g.v.taxhorn.mean,
+  #g.v.taxhorn.weightedmean,
+  #g.v.taxhorn.aabthing,
+  #g.v.taxhorn.abthing,
+  #g.v.taxhorn.acthing,
+  #g.v.taxhorn.bthing,
+  #g.v.taxhorn.bdthing,
+  #g.v.taxhorn.bbthing,
+  #g.v.taxhorn.bcthing),
+  #g.v.taxhorn.nsk,
+  g.v.taxhorn.wnsk1)
+#g.v.taxhorn.wnsk2)
+
+
+do.call(grid.arrange,vlist)
+#find way to seperate violin plot collumns
+
+
+mg <- marrangeGrob(vlist,ncol=3,nrow=3)
+ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
+shell.exec(normalizePath("plots/violin_compare_groups.pdf"))
+
+
+# pca of samples ---------------------------------------------------------------------
+
+view.pca <- function(metric) {
+  # metric <- "euclidean"
+  pcadata <- ordinate(phy, method = "NMDS", distance = metric) %>%
+    scores(display = "sites") %>%
+    as.data.frame() %>%
+    rownames_to_column("sample") %>%
+    left_join(s, by = "sample")
+  s.dups <- pcadata %>% filter(has.sameday)
+  g.pca <- ggplot(pcadata, aes(x = NMDS1, y = NMDS2)) +
+    geom_path(data=s.dups,aes(group=pt.day),color="dark gray",size=1) +
+    geom_point(aes(color=pt),alpha = 0.75) +
+    # geom_text(data=s.dups,aes(label=pt.day)) +
+    theme(aspect.ratio = 1) + ggtitle(metric)
+  g.pca
+}
+
+view.pca("bray")
+view.pca("horn")
+
+metrics <- c("euclidean","bray","unifrac","wunifrac","horn")
+g.pca.list <- metrics %>% map(view.pca)
+do.call(grid.arrange,c(g.pca.list,list(nrow=2)))
+
+
+# hclust of samples -------------------------------------------------------
+
+
+g.hc.wnsk<-view.hclust(dist.taxhorn.wnsk,title="taxhorn.wnsk")
+g.hc.manhattan <- view.hclust(dist.manhattan,title="manhattan")
+g.hc.bray <- view.hclust(dist.bray,title="bray")
+g.hc.euclidean <- view.hclust(dist.euclidean,title="euclidean")
+g.hc.horn <- view.hclust(dist.horn,title="horn")
+g.hc.unifrac <- view.hclust(dist.unifrac,title="unifrac")
+g.hc.wunifrac <- view.hclust(dist.wunifrac,title="wunifrac")
+g.hc.taxhorn.mean <- view.hclust(dist.taxhorn.mean,title="taxhorn.mean")
+g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
+
+grid.newpage()
+grid.draw(g.hc.manhattan)
+
+# g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhorn.weightedmean",label.pct.cutoff = 0.1)
+# grid.draw(g.hc.taxhorn.weightedmean)
+
+mg <- marrangeGrob(list(
+  g.hc.wnsk,
+  g.hc.bray,
+  g.hc.manhattan,
+  g.hc.euclidean,
+  g.hc.horn,
+  g.hc.aabthing,
+  g.hc.unifrac,
+  g.hc.wunifrac,
+  g.hc.taxhorn.mean,
+  g.hc.taxhorn.weightedmean),
+  ncol=1,nrow=1)
+
+
+
+ggsave("plots/hclust_compare.pdf",mg,width=20,height=12)
+shell.exec(normalizePath("plots/hclust_compare.pdf"))
+
+
 
