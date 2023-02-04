@@ -1,5 +1,7 @@
-#check to ssee if I should add steps for installing packages, maybe provide links for some? decide later
-#should I include all of the rejects?
+#Written in R 4.2.2
+#github:https://github.com/TaurLab/ephraim_slamka_tax_distance 
+#note: the packages 'yingtools2' 'ytrecipes' and 'vegan' must be installed through their github pages.
+rm(list=ls())
 #install recquired packages
 library(ggplot2)
 library(base)
@@ -12,8 +14,7 @@ library(ape) #used to manipulate trees
 library(tidyverse)
 library(yingtools2) #ying's suite of data tools
 
-#note: do I need to give them how to get this file, like, do they need to download it somehow?
-rm(list=ls())
+#note: To properly run the rest of file, simply pull the code from the github, this will allow you to access the dataset.
 phy <- readRDS("data/mock_phylo_compact.rds")
 source("R/functions.R")
 s <- get.samp(phy)
@@ -35,10 +36,10 @@ pairs <- sample_names(phy) %>%
   ))
 rm(s1,s2)
 
-
-# given a distance matrix, return a table of pairwise distances.
-# e.g.: dist(mtcars) %>% get.pairwise()
-get.pairwise <- function(dist,diag=TRUE) {
+#Functions:
+  # given a distance matrix, return a table of pairwise distances.
+  # e.g.: dist(mtcars) %>% get.pairwise()
+  get.pairwise <- function(dist,diag=TRUE) {
   mat <- as.matrix(dist,diag=diag)
   # xy <- t(combn(colnames(mat), 2))
   # data.frame(xy, dist=mat[xy]) %>% as_tibble() %>% rename(sample1=X1,sample2=X2)
@@ -53,9 +54,9 @@ get.pairwise <- function(dist,diag=TRUE) {
 }
 
 
-# given a table of pairwise distances, return the distance matrix.
-# dist(mtcars) %>% get.pairwise() %>% get.dist()
-get.dist <- function(pw) {
+  # given a table of pairwise distances, return the distance matrix.
+  # dist(mtcars) %>% get.pairwise() %>% get.dist()
+  get.dist <- function(pw) {
   mat <- pw %>% pivot_wider(id_cols=sample2,names_from=sample1,values_from=dist) %>%
     column_to_rownames("sample2") %>%
     as.matrix()
@@ -63,10 +64,10 @@ get.dist <- function(pw) {
 }
 
 
-# visually display a distance matrix.
-# dist(mtcars) %>% view.dist()
-# dist(mtcars) %>% view.dist(show.numbers=TRUE)
-view.dist <- function(dist,show.numbers=FALSE) {
+  # visually display a distance matrix.
+  # dist(mtcars) %>% view.dist()
+  # dist(mtcars) %>% view.dist(show.numbers=TRUE)
+  view.dist <- function(dist,show.numbers=FALSE) {
   pairwise <- get.pairwise(dist) %>%
     mutate(sample2=fct_rev(sample2))
   ggplot(pairwise,aes(x=sample1,y=sample2,label=pretty_number(dist),fill=dist)) +
@@ -78,8 +79,8 @@ view.dist <- function(dist,show.numbers=FALSE) {
 }
 
 
-# given a phyloseq object, show stack plot and overlay with distance metric in adjacent samples.
-plot.dist <- function(phy,method="bray",sortby="sample",
+  # given a phyloseq object, show stack plot and overlay with distance metric in adjacent samples.
+  plot.dist <- function(phy,method="bray",sortby="sample",
                       levels=c("Superkingdom","Phylum","Class",
                                "Order","Family","Genus","Species")) {
   barwidth <- 0.5
@@ -140,9 +141,9 @@ plot.dist <- function(phy,method="bray",sortby="sample",
 }
 
 
-# this function will calculate horn (or other) distance, and then
-# apply fn to the values.
-get.taxdist <- function(phy,fn=mean,method="horn",show.work=FALSE) {
+  # this function will calculate horn (or other) distance, and then 
+  # apply fn to the values.
+  get.taxdist <- function(phy,fn=mean,method="horn",show.work=FALSE) {
   ranks <- rank_names(phy)
   samples <- sample_names(phy)
   # create multiple phyloseq objects, collapsed at the 
@@ -180,7 +181,7 @@ get.taxdist <- function(phy,fn=mean,method="horn",show.work=FALSE) {
 
 
 
-view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
+  view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
   # by.group <- "pt.day"
   
   hc <- hclust(dist)
@@ -237,8 +238,8 @@ view.hclust <- function(dist,.phy=phy,title="",label.pct.cutoff=0.3) {
 
 
 
-# most samples are from different pts
-pairs %>% count(status)
+  # most samples are from different pts
+  pairs %>% count(status)
 
 # create various distances, including the customized ------------------------------------------------
 
@@ -248,7 +249,15 @@ weighted.mean <- function(x) {
   weights <- length(x):1
   sum( x*weights ) / sum(weights)
 }
-
+  
+# function for weighted mean without superkingdom
+  
+  wnsk1<-function(x){
+    set<-x[-1]
+    weights<-length(set):1
+    sum(set*weights)/sum(weights)
+  }
+  
 # usual distances 
 
 dist.manhattan <- distance(phy,"manhattan")
@@ -258,19 +267,13 @@ dist.horn <- distance(phy,"horn")
 dist.unifrac <- distance(phy,"unifrac")
 dist.wunifrac <- distance(phy,"wunifrac")
 
-wnsk1<-function(x){
-  set<-x[-1]
-  weights<-length(set):1
-  sum(set*weights)/sum(weights)
-}
-
 
 #custom distances
-dist.taxhorn.mean <- get.taxdist(phy,fn=mean,method="horn")
-dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
+  dist.taxhorn.mean <- get.taxdist(phy,fn=mean,method="horn")
+  dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
 
-dist.taxhorn.nsk<-get.taxdist(phy,fn=nsk,method="horn")
-dist.taxhorn.wnsk1<-get.taxdist(phy,fn=wnsk1,method="horn")
+  dist.taxhorn.nsk<-get.taxdist(phy,fn=nsk,method="horn")
+  dist.taxhorn.wnsk1<-get.taxdist(phy,fn=wnsk1,method="horn")
 
 
 # examine each pt's samples at different tax levels -------------------------------------------------
@@ -375,7 +378,7 @@ shell.exec("plots/g.same.sample.pdf")
 
 
 # violin of distances -----------------------------------------------------
-
+# I elected to use violin plots at they show the biases of a metric towards certain extremes.
 #compare by group:
 
 
@@ -395,17 +398,11 @@ g.v.unifrac <- view_violin(dist.unifrac,title="unifrac")
 g.v.wunifrac <- view_violin(dist.wunifrac,title="wunifrac")
 g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
 g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
-#g.v.taxhorn.aabthing <- view_violin(dist.taxhorn.aabthing, title="taxhorn.aabthing")
-#g.v.taxhorn.abthing<-view_violin(dist.taxhorn.abthing,title="taxhorn.abthing")
-#g.v.taxhorn.acthing<-view_violin(dist.taxhorn.acthing,title="taxhorn.acthing")
-#g.v.taxhorn.bthing<-view_violin(dist.taxhorn.bthing,title="taxhorn.bthing")
-#g.v.taxhorn.bdthing<-view_violin(dist.taxhorn.bdthing,title="taxhorn.bdthing")
-#g.v.taxhorn.bbthing<-view_violin(dist.taxhorn.bbthing,title="taxhorn.bbthing")
-#g.v.taxhorn.wnsk2<-view_violin(dist.taxhorn.wnsk2,title="taxhorn.wnsk2")
+g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
 
+#the one below is the final taxHorn
 g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk")
-#g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
-#g.v.taxhorn.bcthing<-view_violin(dist.taxhorn.bcthing,title="taxhorn.bcthing")
+
 vlist <- list( 
   g.v.bray,
   g.v.manhattan,
@@ -414,22 +411,12 @@ vlist <- list(
   g.v.unifrac,
   g.v.wunifrac,
   g.v.taxhorn.mean,
-  #g.v.taxhorn.weightedmean,
-  #g.v.taxhorn.aabthing,
-  #g.v.taxhorn.abthing,
-  #g.v.taxhorn.acthing,
-  #g.v.taxhorn.bthing,
-  #g.v.taxhorn.bdthing,
-  #g.v.taxhorn.bbthing,
-  #g.v.taxhorn.bcthing),
-  #g.v.taxhorn.nsk,
+  g.v.taxhorn.weightedmean,
+  g.v.taxhorn.nsk,
   g.v.taxhorn.wnsk1)
-#g.v.taxhorn.wnsk2)
 
 
 do.call(grid.arrange,vlist)
-#find way to seperate violin plot collumns
-
 
 mg <- marrangeGrob(vlist,ncol=3,nrow=3)
 ggsave("plots/violin_compare_groups.pdf",mg,width=20,height=12)
@@ -487,7 +474,6 @@ mg <- marrangeGrob(list(
   g.hc.manhattan,
   g.hc.euclidean,
   g.hc.horn,
-  g.hc.aabthing,
   g.hc.unifrac,
   g.hc.wunifrac,
   g.hc.taxhorn.mean,
