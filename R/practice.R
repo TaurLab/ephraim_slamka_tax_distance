@@ -180,3 +180,38 @@ data2<-
 
 =======
 >>>>>>> c1449da5594d94c609fb8bcd29ffff94a8006736
+
+
+g.v.manhattan <- view_violin(dist.manhattan,title="manhattan")
+g.v.bray <- view_violin(dist.bray,title="bray")
+g.v.euclidean <- view_violin(dist.euclidean,title="euclidean")
+g.v.horn <- view_violin(dist.horn,title="horn")
+g.v.unifrac <- view_violin(dist.unifrac,title="unifrac")
+g.v.wunifrac <- view_violin(dist.wunifrac,title="wunifrac")
+g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
+g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
+#g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
+
+#the one below is the final taxHorn
+g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn")
+
+vlist2 <- list( 
+  g.v.bray,
+  #g.v.manhattan,
+  g.v.euclidean,
+  g.v.horn,
+  g.v.unifrac,
+  #g.v.wunifrac,
+  #g.v.taxhorn.mean,
+  #g.v.taxhorn.weightedmean,
+  #g.v.taxhorn.nsk,
+  g.v.taxhorn.wnsk1)
+
+
+#do.call(grid.arrange,vlist2)
+
+mg2 <- marrangeGrob(vlist2,ncol=3,nrow=2)
+ggsave("plots/csefviolin_compare_groups.pdf",mg2,width=20,height=12)
+shell.exec(normalizePath("plots/csefviolin_compare_groups.pdf"))
+
+
