@@ -272,7 +272,7 @@ dist.wunifrac <- distance(phy,"wunifrac")
   dist.taxhorn.mean <- get.taxdist(phy,fn=mean,method="horn")
   dist.taxhorn.weightedmean <- get.taxdist(phy,fn=weighted.mean,method="horn")
 
-  dist.taxhorn.nsk<-get.taxdist(phy,fn=nsk,method="horn")
+  #dist.taxhorn.nsk<-get.taxdist(phy,fn=nsk,method="horn")
   dist.taxhorn.wnsk1<-get.taxdist(phy,fn=wnsk1,method="horn")
 
 
@@ -398,7 +398,7 @@ g.v.unifrac <- view_violin(dist.unifrac,title="unifrac")
 g.v.wunifrac <- view_violin(dist.wunifrac,title="wunifrac")
 g.v.taxhorn.mean <- view_violin(dist.taxhorn.mean,title="taxhorn.mean")
 g.v.taxhorn.weightedmean <- view_violin(dist.taxhorn.weightedmean,title="taxhorn.weightedmean")
-g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
+#g.v.taxhorn.nsk<-view_violin(dist.taxhorn.nsk,title="taxhorn.nsk")
 
 #the one below is the final taxHorn
 g.v.taxhorn.wnsk1<-view_violin(dist.taxhorn.wnsk1,title="taxhorn.wnsk")
@@ -412,7 +412,7 @@ vlist <- list(
   g.v.wunifrac,
   g.v.taxhorn.mean,
   g.v.taxhorn.weightedmean,
-  g.v.taxhorn.nsk,
+  #g.v.taxhorn.nsk,
   g.v.taxhorn.wnsk1)
 
 
