@@ -215,3 +215,45 @@ ggsave("plots/csefviolin_compare_groups.pdf",mg2,width=20,height=12)
 shell.exec(normalizePath("plots/csefviolin_compare_groups.pdf"))
 
 
+mg3 <- marrangeGrob(list(
+  g.hc.wnsk1,
+  #g.hc.bray,
+  #g.hc.manhattan,
+  #g.hc.euclidean,
+  g.hc.horn,
+  g.hc.unifrac
+  #g.hc.wunifrac,
+  #g.hc.taxhorn.mean,
+  #g.hc.taxhorn.weightedmean
+),
+  ncol=1,nrow=1)
+
+
+
+ggsave("plots/csefhclust_compare.pdf",mg3,width=20,height=12)
+shell.exec(normalizePath("plots/csefhclust_compare.pdf"))
+
+s.taxdata <- s %>% group_by(pt) 
+
+otu.taxdata <- phy %>% prune_samples(s.taxdata$sample,.) %>%
+  get.otu.melt() %>%
+  tax.plot(data=TRUE)
+
+pal <- get.yt.palette2(sa)
+
+g.taxdata.sample <- ggplot(sa,aes(x=sample,y=pctseqs,fill=Species)) +
+  geom_col(show.legend = FALSE) + 
+  geom_text(aes(y=y.text,label=tax.label),angle=-90) +
+  scale_fill_manual(values=pal) +
+  facet_grid(.~pt.day.samp,scales="free_x",space="free_x")
+g.taxdata.sample
+
+ggplot(sa, aes(x=sample, y=pctseqs, fill=Species)) +geom_col(show.legend= FALSE)+
+  scale_fill_manual(values=pal)+ facet_grid(scales="free_x",space="free_x")
+
+sa<-s %>% filter(pt=="HV")
+
+sa %>% ggplot(aes(x=sample, y=10,))
+
+
+
