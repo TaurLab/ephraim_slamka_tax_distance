@@ -54,7 +54,6 @@ dist.unifrac <- distance(phy,"unifrac")
 dist.wunifrac <- distance(phy,"wunifrac")
 
 
-
 #ignore what follows, just an attempt at learning, any mention of these functions was just an attempt at learning-----------
 #this isn't finished, I'm just trying to figure out how all of this works.
 athing<- function(list){sqrt(sum(list)) }
