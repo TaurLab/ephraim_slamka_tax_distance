@@ -19,7 +19,6 @@ phy <- readRDS("data/mock_phylo_compact.rds")
 # source("R/functions.R")
 s <- get.samp(phy)
 
-
 # assess all pairwise combinations and classify as one of 4 groups.
 s1 <- get.samp(phy) %>% select(sample,pt,pt.day,pt.day.samp) %>% rename_with(~paste0(.,"1"))
 s2 <- get.samp(phy) %>% select(sample,pt,pt.day,pt.day.samp) %>% rename_with(~paste0(.,"2"))
@@ -68,14 +67,14 @@ calc.distance2 <- function(.phy, method, rarefy=FALSE, use.pct=FALSE, use.tax.tr
   }
 
   if (rlang::is_function(method)) {
-    dist <- method(phy)
+    dist <- method(.phy)
   } else if (is.character(method)) {
     if (method=="taxhorn") {
-      dist <- calc.taxhorn.distance(phy)
+      dist <- calc.taxhorn.distance(.phy)
     } else if (method=="tax.dpcoa") {
-      dist <- calc.tax.dpcoa.distance(phy)
+      dist <- calc.tax.dpcoa.distance(.phy)
     } else {
-      dist <- distance(physeq=phy, method=method, ...)
+      dist <- distance(physeq=.phy, method=method, ...)
     }
   } else {
     stop("unknown method")
@@ -85,7 +84,7 @@ calc.distance2 <- function(.phy, method, rarefy=FALSE, use.pct=FALSE, use.tax.tr
 
 
 check_same <- function(method) {
-  phy.rel <- transform_sample_counts(.phy, function(x) x / sum(x) )
+  phy.rel <- transform_sample_counts(phy, function(x) x / sum(x) )
   d1 <- distance(phy,method)
   d2 <- distance(phy.rel,method)
   p1 <- d1 %>% get.pairwise()
@@ -101,7 +100,6 @@ check_same <- function(method) {
 # check_same("euclidean")
 # check_same("bray")
 # check_same("chao")
-
 
 phy.unfold.taxranks <- function(phy) {
   # samp <- sample_data(phy)
@@ -131,7 +129,7 @@ phy.unfold.taxranks <- function(phy) {
   return(phy.unfold)
 }
 
-calc.mean.distance <- function(phy,method,weights=c(0,7,6,5,4,3,2,1)) {
+calc.mean.distance2 <- function(phy,method,weights=c(0,7,6,5,4,3,2,1)) {
   # method="horn"
   # weights <- c(0,7,6,5,4,3,2,1)
   phy <- phyloseq(otu_table(phy),tax_table(phy))
@@ -158,12 +156,10 @@ calc.mean.distance <- function(phy,method,weights=c(0,7,6,5,4,3,2,1)) {
 }
 
 
-calc.unfold.distance <- function(phy,method) {
+calc.unfold.distance2 <- function(phy,method) {
   phy.unfold <- phy.unfold.taxranks(phy)
   distance(phy.unfold,method=method)
 }
-
-
 
 
 
@@ -194,12 +190,49 @@ dists <- list(euclidean = calc.distance2(phy,"euclidean"),
               tax.dpcoa=calc.distance2(phy,"tax.dpcoa"),
               tax.dpcoa.rel = calc.distance2(phy,"tax.dpcoa",use.pct=TRUE),
               horn = calc.distance2(phy,"horn"),
-              unfoldhorn = calc.unfold.distance(phy,"horn"),
-              tax.horn = calc.mean.distance(phy,"horn"),
+              unfoldhorn = calc.unfold.distance2(phy,"horn"),
+              tax.horn = calc.mean.distance2(phy,"horn"),
               taxhorn = calc.distance2(phy,"taxhorn"))
+
 
 # dists$tax.horn <- calc.mean.distance(phy,"horn")
 # dists$unfold.horn <- calc.unfold.distance(phy,"horn")
+
+# view.distance.matrix(dists$euclidean)
+# view.distance.matrix(dists$bray)
+# view.distance.matrix(dists$bray.pct)
+
+# check_same("horn")
+# check_same("bray")
+# check_same("morisita")
+
+# all.equal(d1,d2)
+# all.equal(d3,d4)
+# all.equal(d7)
+# rank_names(phy)
+# rank_names(phy)
+# phy2 <- phy %>% select_tax_table(!!!syms(rank_names(.)[-1]))
+# d1 <- calc.distance(phy,"unfold.horn")
+# d1a <- calc.distance(phy2,"unfold.horn")
+# d2 <- dists$unfoldhorn
+# d3 <- dists$horn
+# d4 <- calc.distance(phy,"horn")
+# d5 <- dists$tax.horn
+# d6 <- dists$taxhorn
+# d7 <- calc.distance(phy,"mean.horn")
+# v1 <- view_violin(d1,"unfold")
+# v1a <- view_violin(d1a,"unfold")
+# v2 <- view_violin(d2,"unfold orig")
+# v3 <- view_violin(d3,"horn orig")
+# v4 <- view_violin(d4,"horn new")
+# v5 <- view_violin(d5,"taxhorn orig")
+# v6 <- view_violin(d6,"taxhorn orig 2")
+# v7 <- view_violin(d7,"taxhorn new")
+# v1+v2
+# v1+v1a+v2+v3+v4+v5+v6+v7
+# get.otu(phy) %>% .[1:10,1:10]
+# view.distance.matrix(d1)
+# otu <- get.otu(phy)
 
 
 
@@ -214,11 +247,20 @@ view_violin <- function(dist,title) {
     scale_x_discrete("")
 }
 
+
+# view_violin(dists$taxhorn,"taxhorn")
+
 glist.violin <- dists %>% imap(~{
   view_violin(.x,.y)
 })
 
+
 inject(wrap_plots(!!!glist.violin,ncol=6))
+
+pdf("plots/mega_violin.pdf",width=30,height=20)
+inject(wrap_plots(!!!glist.violin,ncol=6))
+dev.off()
+shell.exec("plots/mega_violin.pdf")
 
 # show reseqs -------------------------------------------------------------
 
@@ -1242,6 +1284,147 @@ otu %>%
 # 
 # 
 # 
+
+
+
+
+
+
+
+
+
+# manual horn calc --------------------------------------------------------
+
+subsamps <- c("sampA"="PT1_d0_samp61_2","sampB"="PT2_d330_samp55_1")
+subtaxa <- c("otu4"="AGCGTAGACGGAGAGGCAAGTCTGATGTGAAAACCCGGGGCTCAACCCCGGGACTGCATTGGAAACTGTTTTTCTAGAGTGTCGGAGAGGTAAGTGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTACTGGACGATGACTGACGTTGAGGCTCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGACTGCTAGGTGTCGGGAGGCAAAGCCTTTCGGTGCCGCAGCAAACGCAATAAGCAGTCCACCTGGGGAGTACGTTCGCAAGAATGAA", 
+             "otu5"="CGCGTAGGCGGACTGTCAAGTCAGTCGTGAAATACCGGGGCTTAACCCCGGGGCTGCGATTGAAACTGACAGCCTTGAGTATCGGAGAGGAAAGCGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTTCTGGACGACAACTGACGCTGAGGCGCGAAAGTGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACACCGTAAACGATGGATACTAGGTGTAGGAGGTATCGACCCCTTCTGTGCCGCAGTTAACACAATAAGTATCCCACCTGGGGAGTACGACCGCAAGGTTGAA", 
+             "otu6"="AGCGTAGACGGCATGGCAAGCCAGATGTGAAAGCCCGGGGCTCAACCCCGGGACTGCATTTGGAACTGTCAGGCTAGAGTGTCGGAGAGGAAAGCGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTTCTGGACGATGACTGACGTTGAGGCTCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGAATACTAGGTGTCGGGTGGCAAAGCCATTCGGTGCCGCAGCAAACGCAATAAGTATTCCACCTGGGGAGTACGTTCGCAAGAATGAA", 
+             "otu7"="AGCGTAGACGGAAGAGTAAGTCTGATGTGAAAGGCTGGGGCTTAACCCCAGGACTGCATTGGAAACTGTTTTTCTAGAGTGCCGGAGAGGTAAGCGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTACTGGACGGTAACTGACGTTGAGGCTCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGAATACTAGGTGTCGGGTGGCAAAGCCATTCGGTGCCGCAGCAAACGCAATAAGTATTCCACCTGGGGAGTACGTTCGCAAGAATGAA", 
+             "otu8"="CACGTAGGCGGCTTGGTAAGTCAGGGGTGAAATCCCACAGCCCAACTGTGGAACTGCCTTTGATACTGCCAGGCTTGAGTACCGGAGAGGGTGGCGGAATTCCAGGTGTAGGAGTGAAATCCGTAGATATCTGGAGGAACACCGGTGGCGAAGGCGGCCACCTGGACGGTAACTGACGCTGAGGTGCGAAAGCGTGGGTAGCAAACAGGATTAGATACCCTGGTAGTCCACGCTGTAAACGATGGGTGCTGGGTGCTGGGATGTATGTCTCGGTGCCGTAGCTAACGCGATAAGCACCCCGCCTGGGGAGTACGGTCGCAAGGCTGAA", 
+             "otu9"="TGCGTAGGCGGCCTTTTAAGTCAGCGGTGAAAGTCTGTGGCTCAACCATAGAATTGCCGTTGAAACTGGGGGGCTTGAGTATGTTTGAGGCAGGCGGAATGCGTGGTGTAGCGGTGAAATGCATAGATATCACGCAGAACCCCGATTGCGAAGGCAGCCTGCCAAGCCATGACTGACGCTGATGCACGAAAGCGTGGGGATCAAACAGGATTAGATACCCTGGTAGTCCACGCAGTAAACGATGATCACTAGCTGTTTGCGATACACTGTAAGCGGCACAGCGAAAGCGTTAAGTGATCCACCTGGGGAGTACGCCGGCAACGGTGAA", 
+             "otu1"="AGCGTAGACGGATAGGCAAGTCTGGAGTGAAAACCCAGGGCTCAACCTTGGGACTGCTTTGGAAACTGCAGATCTGGAGTGCCGGAGAGGTAAGCGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTACTGGACGGTGACTGACGTTGAGGCTCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGACTACTAGGTGTCGGTGTGCAAAGCACATCGGTGCCGCAGCAAACGCAATAAGTAGTCCACCTGGGGAGTACGTTCGCAAGAATGAA", 
+             "otu2"="TGCGTAGGTGGTTTCTTAAGTCAGAGGTGAAAGGCTACGGCTCAACCGTAGTAAGCCTTTGAAACTGAGAAACTTGAGTGCAGGAGAGGAGAGTGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTTGCGAAGGCGGCTCTCTGGACTGTAACTGACACTGAGGCACGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGAGTACTAGCTGTCGGAGGTTACCCCCTTCGGTGGCGCAGCTAACGCATTAAGTACTCCGCCTGGGAAGTACGCTCGCAAGAGTGAA", 
+             "otu3"="AGCGCAGGCGGTACGGCAAGTCTGATGTGAAAGCCCGGGGCTCAACCCCGGTACTGCATTGGAAACTGTCGGACTAGAGTGTCGGAGGGGTAAGTGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTACTGGACGATTACTGACGCTGAGGCTCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGAATACTAGGTGTCGGGGAGCATTGCTCTTCGGTGCCGCAGCAAACGCAATAAGTATTCCACCTGGGGAGTACGTTCGCAAGAATGAA")
+
+physub <- phy %>% 
+  filter(sample %in% subsamps) %>%
+  filter(otu %in% subtaxa)
+
+sample_names(physub) <- names(subsamps)[match(sample_names(physub),subsamps)]
+taxa_names(physub) <- names(subtaxa)[match(taxa_names(physub),subtaxa)]
+om %>% copy.to.clipboard()
+
+om <- physub %>% get.otu(as.matrix=FALSE) %>% arrange(otu) %>%
+  mutate(pctA=sampA/sum(sampA),
+         pctB=sampB/sum(sampB),
+         pctA.pctB=pctA*pctB,
+         pctA2=pctA^2,
+         pctB2=pctB^2)
+
+numerator <- sum(om$pctA*om$pctB)
+denom <- (sum(om$pctA^2)+sum(om$pctB^2))/2
+overlap <- numerator / denom
+distcalc <- 1-overlap
+distcalc
+
+
+calc.distance(physub,"horn")
+calc.distance(physub,"morisita")
+# 0.7708977
+
+
+
+
+
+# why does bray fail ------------------------------------------------------
+
+
+
+
+
+depict <- function(subsamps) {
+  physub <- phy %>% filter(sample %in% subsamps)
+  bray <- calc.distance(physub,"bray")[1] %>% round(3)
+  bray.pct <- calc.distance(physub,"pct.bray")[1] %>% round(3)
+  horn <- calc.distance(physub,"horn")[1] %>% round(3)
+  taxhorn <- calc.distance(physub,"mean.horn")[1] %>% round(3)
+  # taxhorn <- calc.mean.distance2(physub,"horn") %>% round(3)
+  unfoldhorn <- calc.distance(physub,"unfold.horn")[1] %>% round(3)
+  
+  
+  title <- str_glue("bray={bray}\npct.bray={bray.pct}\nhorn={horn},\ntaxhorn={taxhorn}\nunfoldhorn={unfoldhorn}")  
+  otusub <- get.otu.melt(physub,filter.zero = FALSE) %>%
+    mutate(sign=ifelse(sample==subsamps[1],1,-1),
+           y=sign*pctseqs) %>%
+    group_by(otu) %>%
+    mutate(y1=pctseqs[which(sample==subsamps[1])[1]],
+           y2=pctseqs[which(sample==subsamps[2])[1]]) %>%
+    ungroup() %>% 
+    arrange(y1,-y2) %>%
+    mutate(x=fct_inorder(otu))
+
+  g.compare <- ggplot(otusub,aes(x=x,y=y,fill=otu)) + geom_col() +
+    scale_fill_taxonomy(data=otusub,fill=otu) +
+    scale_y_continuous(trans=log_epsilon_trans(0.001))
+  g.tax <- ggplot(otusub,aes(x=sample,y=pctseqs,fill=otu,label=Species)) + 
+    geom_taxonomy(width=0.5,show.ribbon = TRUE) +
+    ggtitle(title)
+  g.tax / g.compare
+}
+
+#samp samp
+subsamps <- c("HV_d0_samp1_4","HV_d0_samp1_6")
+depict(subsamps)
+
+#same samp 2
+subsamps <- c("HV_d0_samp2_1","HV_d0_samp1_6")
+depict(subsamps)
+
+
+# different people
+subsamps <- c("HV_d0_samp1_4","PT2_d0_samp24_1")
+depict(subsamps)
+
+# different people
+subsamps <- c("PT1_d0_samp61_2","PT2_d0_samp22_1")
+depict(subsamps)
+
+
+
+
+subsamps <- c("HV_d0_samp1_4","HV_d0_samp1_6")
+physub <- phy %>% filter(sample %in% subsamps)
+sample_names(physub) <- paste0("samp",LETTERS[seq_along(sample_names(physub))])
+
+
+
+taxa_names(physub) <- paste0("otu",seq_along(taxa_names(physub)))
+
+
+otu_table(physub)
+
+
+sample_names(physub) <- names(subsamps)[match(sample_names(physub),subsamps)]
+taxa_names(physub) <- names(subtaxa)[match(taxa_names(physub),subtaxa)]
+om %>% copy.to.clipboard()
+
+
+
+
+
+
+
+# %>%
+#   mutate(sign=ifelse(sample==subsamps[1],1,-1),
+#          y=sign*pctseqs) %>%
+#   group_by(otu) %>%
+#   mutate(y1=pctseqs[which(sample==subsamps[1])[1]],
+#          y2=pctseqs[which(sample==subsamps[2])[1]]) %>%
+#   ungroup() %>% 
+#   arrange(y1,-y2) %>%
+#   mutate(x=fct_inorder(otu))
+
+
 
 
 
