@@ -1391,27 +1391,68 @@ depict(subsamps)
 
 
 
-
 subsamps <- c("HV_d0_samp1_4","HV_d0_samp1_6")
 physub <- phy %>% filter(sample %in% subsamps)
 sample_names(physub) <- paste0("samp",LETTERS[seq_along(sample_names(physub))])
-
-
-
 taxa_names(physub) <- paste0("otu",seq_along(taxa_names(physub)))
 
+otu <- get.otu(physub,as.matrix=FALSE) %>%
+  mutate(pctA=sampA/sum(sampA),
+         pctB=sampB/sum(sampB),
+         pctA.pctB=pctA*pctB,
+         pctA2=pctA^2,
+         pctB2=pctB^2,
+         min.sampAB=pmin(sampA,sampB),
+         min.pctAB=pmin(pctA,pctB)) %>%
+  left_join(get.tax(physub),by="otu") %>%
+  mutate(otu=fct_reordern(otu,pctA+pctB))
+  
 
-otu_table(physub)
 
 
-sample_names(physub) <- names(subsamps)[match(sample_names(physub),subsamps)]
-taxa_names(physub) <- names(subtaxa)[match(taxa_names(physub),subtaxa)]
-om %>% copy.to.clipboard()
+calc.distance(physub,"horn")
+horn.overlap <- sum(otu$pctA*otu$pctB) / 
+  ((sum(otu$pctA^2)+sum(otu$pctB^2))/2)
+# sum(otu$pctA.pctB) / 
+#   ((sum(otu$pctA2)+sum(otu$pctB2))/2)
+horn <- 1-horn.overlap
+horn
 
 
+calc.distance(physub,"pct.bray")
+pct.bray <- 1-(2*sum(pmin(otu$pctA,otu$pctB)) / sum(otu$pctA,otu$pctB))
+# 1-(2*sum(otu$min.pctAB) / sum(otu$pctA,otu$pctB))
+pct.bray
 
+calc.distance(physub,"bray")
+bray <- 1-(2*sum(pmin(otu$sampA,otu$sampB)) / sum(otu$sampA,otu$sampB))
+# 1-(2*sum(otu$min.sampAB) / sum(otu$sampA,otu$sampB))
+bray
 
+g1 <- ggplot(otu,aes(x=otu,y=pctA,fill=otu)) + 
+  geom_col() + expand_limits(y=1) +
+  scale_fill_taxonomy(data=otu,fill=otu) +
+  scale_y_continuous(trans=log_epsilon_trans())
+g2 <- ggplot(otu,aes(x=otu,y=pctB,fill=otu)) + 
+  geom_col() + expand_limits(y=1) +
+  scale_fill_taxonomy(data=otu,fill=otu) +
+  scale_y_continuous(trans=log_epsilon_trans())
 
+gAB <- ggplot(otu,aes(x=otu,y=pctA.pctB,fill=otu)) + 
+  geom_col() +
+  scale_fill_taxonomy(data=otu,fill=otu) +
+  scale_y_continuous(trans=log_epsilon_trans())
+
+gminpctAB <- ggplot(otu,aes(x=otu,y=min.pctAB,fill=otu)) + 
+  geom_col() +
+  scale_fill_taxonomy(data=otu,fill=otu) +
+  scale_y_continuous(trans=log_epsilon_trans())
+gminAB <- ggplot(otu,aes(x=otu,y=min.sampAB,fill=otu)) + 
+  geom_col() +
+  scale_fill_taxonomy(data=otu,fill=otu) +
+  scale_y_continuous(trans=log_epsilon_trans())
+
+gg.stack(gminpctAB,gminAB,gAB,gminAB,g1,g2)
 
 
 # %>%
@@ -1423,6 +1464,7 @@ om %>% copy.to.clipboard()
 #   ungroup() %>% 
 #   arrange(y1,-y2) %>%
 #   mutate(x=fct_inorder(otu))
+
 
 
 
