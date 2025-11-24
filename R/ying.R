@@ -161,38 +161,81 @@ calc.unfold.distance2 <- function(phy,method) {
   distance(phy.unfold,method=method)
 }
 
+# dists <- list(euclidean = calc.distance2(phy,"euclidean"), 
+#               euclidean.pct = calc.distance2(phy,"euclidean",use.pct=TRUE), # should be normalized
+#               manhattan.pct = calc.distance2(phy,"manhattan"),
+#               manhattan = calc.distance2(phy,"manhattan",use.pct=TRUE), # should be normalized
+#               bray = calc.distance2(phy,"bray"),
+#               bray.pct = calc.distance2(phy,"bray",use.pct=TRUE),
+#               chao = calc.distance2(phy,"chao"),
+#               chao.pct = calc.distance2(phy,"chao",use.pct=TRUE),
+#               cao = calc.distance2(phy,"cao"),
+#               cao.pct = calc.distance2(phy,"cao",use.pct=TRUE),
+#               altGower = calc.distance2(phy,"altGower"),
+#               altGower.pct = calc.distance2(phy,"altGower",use.pct=TRUE),
+#               canberra = calc.distance2(phy,"canberra"),
+#               canberra.pct = calc.distance2(phy,"canberra",use.pct=TRUE),
+#               kulczynski = calc.distance2(phy,"kulczynski"),
+#               kulczynski.pct = calc.distance2(phy,"kulczynski",use.pct=TRUE),
+#               gower = calc.distance2(phy,"gower"),
+#               gower.pct = calc.distance2(phy,"gower",use.pct=TRUE),
+#               unifrac = calc.distance2(phy,"unifrac",rarefy=TRUE),
+#               unifrac.pct = calc.distance2(phy,"unifrac",rarefy=TRUE,use.pct=TRUE),
+#               wunifrac = calc.distance2(phy,"wunifrac"),
+#               wunifrac.pct = calc.distance2(phy,"wunifrac",use.pct=TRUE),
+#               tax.wunifrac = calc.distance2(phy,"wunifrac",use.tax.tree=TRUE),
+#               tax.wunifrac = calc.distance2(phy,"wunifrac",use.tax.tree=TRUE,use.pct=TRUE),
+#               tax.dpcoa=calc.distance2(phy,"tax.dpcoa"),
+#               tax.dpcoa.rel = calc.distance2(phy,"tax.dpcoa",use.pct=TRUE),
+#               horn = calc.distance2(phy,"horn"),
+#               
+#               unfoldhorn = calc.distance(phy,"unfold.horn"),
+#               # unfoldhorn = calc.unfold.distance2(phy,"horn"),
+#               taxhorn = calc.distance(phy,"mean.horn")
+#               # tax.horn = calc.mean.distance2(phy,"horn"),
+#               # taxhorn = calc.distance2(phy,"taxhorn")
+# )
 
 
-dists <- list(euclidean = calc.distance2(phy,"euclidean"), 
-              euclidean.pct = calc.distance2(phy,"euclidean",use.pct=TRUE), # should be normalized
-              manhattan.pct = calc.distance2(phy,"manhattan"),
-              manhattan = calc.distance2(phy,"manhattan",use.pct=TRUE), # should be normalized
-              bray = calc.distance2(phy,"bray"),
-              bray.pct = calc.distance2(phy,"bray",use.pct=TRUE),
-              chao = calc.distance2(phy,"chao"),
-              chao.pct = calc.distance2(phy,"chao",use.pct=TRUE),
-              cao = calc.distance2(phy,"cao"),
-              cao.pct = calc.distance2(phy,"cao",use.pct=TRUE),
-              altGower = calc.distance2(phy,"altGower"),
-              altGower.pct = calc.distance2(phy,"altGower",use.pct=TRUE),
-              canberra = calc.distance2(phy,"canberra"),
-              canberra.pct = calc.distance2(phy,"canberra",use.pct=TRUE),
+dists <- list(euclidean = calc.distance(phy,"euclidean"), 
+              euclidean.pct = calc.distance(phy,"pct.euclidean"),
+              manhattan.pct = calc.distance(phy,"manhattan"),
+              manhattan = calc.distance(phy,"pct.manhattan"),
+              bray = calc.distance(phy,"bray"),
+              bray.pct = calc.distance(phy,"pct.bray"),
+              chao = calc.distance(phy,"chao"),
+              chao.pct = calc.distance(phy,"pct.chao"),
+              cao = calc.distance(phy,"cao"),
+              cao.pct = calc.distance(phy,"pct.cao"),
+              altGower = calc.distance(phy,"altGower"),
+              altGower.pct = calc.distance(phy,"pct.altGower"),
+              canberra = calc.distance(phy,"canberra"),
+              canberra.pct = calc.distance(phy,"pct.canberra"),
               kulczynski = calc.distance2(phy,"kulczynski"),
               kulczynski.pct = calc.distance2(phy,"kulczynski",use.pct=TRUE),
-              gower = calc.distance2(phy,"gower"),
-              gower.pct = calc.distance2(phy,"gower",use.pct=TRUE),
-              unifrac = calc.distance2(phy,"unifrac",rarefy=TRUE),
-              unifrac.pct = calc.distance2(phy,"unifrac",rarefy=TRUE,use.pct=TRUE),
-              wunifrac = calc.distance2(phy,"wunifrac"),
-              wunifrac.pct = calc.distance2(phy,"wunifrac",use.pct=TRUE),
-              tax.wunifrac = calc.distance2(phy,"wunifrac",use.tax.tree=TRUE),
-              tax.wunifrac = calc.distance2(phy,"wunifrac",use.tax.tree=TRUE,use.pct=TRUE),
-              tax.dpcoa=calc.distance2(phy,"tax.dpcoa"),
-              tax.dpcoa.rel = calc.distance2(phy,"tax.dpcoa",use.pct=TRUE),
-              horn = calc.distance2(phy,"horn"),
-              unfoldhorn = calc.unfold.distance2(phy,"horn"),
-              tax.horn = calc.mean.distance2(phy,"horn"),
-              taxhorn = calc.distance2(phy,"taxhorn"))
+              gower = calc.distance(phy,"gower"),
+              gower.pct = calc.distance(phy,"pct.gower"),
+              unifrac = calc.distance(phy,"rarefy.unifrac",rarefy=TRUE),
+              unifrac.pct = calc.distance(phy,"pct.rarefy.unifrac"),
+              wunifrac = calc.distance(phy,"wunifrac"),
+              wunifrac.pct = calc.distance(phy,"pct.wunifrac"),
+              taxtree.wunifrac = calc.distance(phy,"taxtree.wunifrac"), #######
+              taxtree.pct.wunifrac = calc.distance(phy,"taxtree.pct.wunifrac"),
+              tax.dpcoa=calc.distance(phy,"taxtree.dpcoa"),
+              tax.dpcoa.pct = calc.distance(phy,"taxtree.pct.dpcoa"),
+              horn = calc.distance(phy,"horn"),
+              unfoldhorn = calc.distance(phy,"unfold.horn"),
+              taxhorn = calc.distance(phy,"mean.horn"))
+chao.pct = calc.distance2(phy,"chao",use.pct=TRUE)
+
+
+
+# set.seed(1)
+# d1 <- calc.distance2(phy,"tax.dpcoa")
+# set.seed(1)
+# d2 <- calc.distance(phy,"taxtree.dpcoa")
+# all.equal(d1,d2)
+
 
 
 # dists$tax.horn <- calc.mean.distance(phy,"horn")
@@ -249,6 +292,9 @@ view_violin <- function(dist,title) {
 
 
 # view_violin(dists$taxhorn,"taxhorn")
+
+# view_violin(dists$bray.pct,"pctbray")
+# view_violin(dists$bray.pct,"pctbray")
 
 glist.violin <- dists %>% imap(~{
   view_violin(.x,.y)
@@ -426,6 +472,26 @@ dev.off()
 shell.exec("plots/ying_hclust.pdf")
 
 
+
+
+
+
+
+# view tax stackplots ---------------------------------------------------------
+
+
+
+
+otu <- get.otu.melt(phy) %>%
+  mutate(pt=factor(pt,levels=c("HV","PT1","PT2","PT3")),
+         sample=fct_reordern(sample,pt,day,sample.id))
+
+
+g.tax <- ggplot(otu,aes(x=sample,y=pctseqs,fill=otu,label=Species)) +
+  geom_taxonomy() +
+  theme(axis.text.x=element_text(angle=90)) +
+  facet_grid(.~pt,scales="free_x",space="free_x")
+g.tax
 
 
 
@@ -1295,6 +1361,7 @@ otu %>%
 
 # manual horn calc --------------------------------------------------------
 
+
 subsamps <- c("sampA"="PT1_d0_samp61_2","sampB"="PT2_d330_samp55_1")
 subtaxa <- c("otu4"="AGCGTAGACGGAGAGGCAAGTCTGATGTGAAAACCCGGGGCTCAACCCCGGGACTGCATTGGAAACTGTTTTTCTAGAGTGTCGGAGAGGTAAGTGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTACTGGACGATGACTGACGTTGAGGCTCGAAAGCGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACGCCGTAAACGATGACTGCTAGGTGTCGGGAGGCAAAGCCTTTCGGTGCCGCAGCAAACGCAATAAGCAGTCCACCTGGGGAGTACGTTCGCAAGAATGAA", 
              "otu5"="CGCGTAGGCGGACTGTCAAGTCAGTCGTGAAATACCGGGGCTTAACCCCGGGGCTGCGATTGAAACTGACAGCCTTGAGTATCGGAGAGGAAAGCGGAATTCCTAGTGTAGCGGTGAAATGCGTAGATATTAGGAGGAACACCAGTGGCGAAGGCGGCTTTCTGGACGACAACTGACGCTGAGGCGCGAAAGTGTGGGGAGCAAACAGGATTAGATACCCTGGTAGTCCACACCGTAAACGATGGATACTAGGTGTAGGAGGTATCGACCCCTTCTGTGCCGCAGTTAACACAATAAGTATCCCACCTGGGGAGTACGACCGCAAGGTTGAA", 
@@ -1314,12 +1381,21 @@ sample_names(physub) <- names(subsamps)[match(sample_names(physub),subsamps)]
 taxa_names(physub) <- names(subtaxa)[match(taxa_names(physub),subtaxa)]
 om %>% copy.to.clipboard()
 
+
+
 om <- physub %>% get.otu(as.matrix=FALSE) %>% arrange(otu) %>%
   mutate(pctA=sampA/sum(sampA),
          pctB=sampB/sum(sampB),
          pctA.pctB=pctA*pctB,
          pctA2=pctA^2,
          pctB2=pctB^2)
+
+om %>% 
+  # select(otu,sampA,sampB) %>% 
+  dt()
+
+# horn = sum( pctA * pctB ) / denom
+
 
 numerator <- sum(om$pctA*om$pctB)
 denom <- (sum(om$pctA^2)+sum(om$pctB^2))/2
@@ -1336,10 +1412,8 @@ calc.distance(physub,"morisita")
 
 
 
+
 # why does bray fail ------------------------------------------------------
-
-
-
 
 
 depict <- function(subsamps) {
@@ -1350,8 +1424,7 @@ depict <- function(subsamps) {
   taxhorn <- calc.distance(physub,"mean.horn")[1] %>% round(3)
   # taxhorn <- calc.mean.distance2(physub,"horn") %>% round(3)
   unfoldhorn <- calc.distance(physub,"unfold.horn")[1] %>% round(3)
-  
-  
+
   title <- str_glue("bray={bray}\npct.bray={bray.pct}\nhorn={horn},\ntaxhorn={taxhorn}\nunfoldhorn={unfoldhorn}")  
   otusub <- get.otu.melt(physub,filter.zero = FALSE) %>%
     mutate(sign=ifelse(sample==subsamps[1],1,-1),
@@ -1380,7 +1453,6 @@ depict(subsamps)
 subsamps <- c("HV_d0_samp2_1","HV_d0_samp1_6")
 depict(subsamps)
 
-
 # different people
 subsamps <- c("HV_d0_samp1_4","PT2_d0_samp24_1")
 depict(subsamps)
@@ -1388,6 +1460,7 @@ depict(subsamps)
 # different people
 subsamps <- c("PT1_d0_samp61_2","PT2_d0_samp22_1")
 depict(subsamps)
+
 
 
 
@@ -1406,23 +1479,24 @@ otu <- get.otu(physub,as.matrix=FALSE) %>%
          min.pctAB=pmin(pctA,pctB)) %>%
   left_join(get.tax(physub),by="otu") %>%
   mutate(otu=fct_reordern(otu,pctA+pctB))
-  
-
-
 
 calc.distance(physub,"horn")
+calc.distance(physub,"bray")
+
 horn.overlap <- sum(otu$pctA*otu$pctB) / 
   ((sum(otu$pctA^2)+sum(otu$pctB^2))/2)
+
 # sum(otu$pctA.pctB) / 
 #   ((sum(otu$pctA2)+sum(otu$pctB2))/2)
 horn <- 1-horn.overlap
 horn
 
-
 calc.distance(physub,"pct.bray")
 pct.bray <- 1-(2*sum(pmin(otu$pctA,otu$pctB)) / sum(otu$pctA,otu$pctB))
 # 1-(2*sum(otu$min.pctAB) / sum(otu$pctA,otu$pctB))
 pct.bray
+
+
 
 calc.distance(physub,"bray")
 bray <- 1-(2*sum(pmin(otu$sampA,otu$sampB)) / sum(otu$sampA,otu$sampB))
@@ -1441,7 +1515,7 @@ g2 <- ggplot(otu,aes(x=otu,y=pctB,fill=otu)) +
 gAB <- ggplot(otu,aes(x=otu,y=pctA.pctB,fill=otu)) + 
   geom_col() +
   scale_fill_taxonomy(data=otu,fill=otu) +
-  scale_y_continuous(trans=log_epsilon_trans())
+  scale_y_continuous(trans=log_epsilon_trans(0.00001))
 
 gminpctAB <- ggplot(otu,aes(x=otu,y=min.pctAB,fill=otu)) + 
   geom_col() +
@@ -1452,7 +1526,17 @@ gminAB <- ggplot(otu,aes(x=otu,y=min.sampAB,fill=otu)) +
   scale_fill_taxonomy(data=otu,fill=otu) +
   scale_y_continuous(trans=log_epsilon_trans())
 
-gg.stack(gminpctAB,gminAB,gAB,gminAB,g1,g2)
+gg.stack(gminpctAB,gAB,gminAB,g1,g2)
+
+# ABCDEFG
+# ABCDEFG
+# ABCDEFG
+# ABCDEFG
+# ABCDEFG
+# ABCDEXG
+# AXCDEFG
+
+
 
 
 # %>%
