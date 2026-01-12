@@ -5,8 +5,6 @@ library(phyloseq)
 rm(list=ls())
 phy.combined.all <- readRDS("data/phy.combined.rds")
 
-
-
 all.levels <- c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", "full_taxonomy", "taxid")
 taxid.levels <- c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", "taxid")
 bact.levels <- c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
@@ -16,7 +14,8 @@ phy.combined <- phy.combined.all %>%
   mutate(otu=taxid) %>%
   select(-taxid)
 
-s.combined <- phy.combined %>% get.samp() %>% select(sample,source,MRN,DateCollection,Sample_ID)
+s.combined <- phy.combined %>% get.samp() %>% 
+  select(sample,source,MRN,DateCollection,Sample_ID)
 s1 <- s.combined %>% rename_with(~paste0(.,"1"))
 s2 <- s.combined %>% rename_with(~paste0(.,"2"))
 pairs.combined <- sample_names(phy.combined) %>% 
