@@ -38,8 +38,7 @@ newotu <- phy %>%
 newtax <- phy %>% 
   get.tax() %>%
   select(-full_taxonomy) %>%
-  set.tax() %>%
-  arrange(taxid)
+  set.tax()
 # rownames(newtax) <- letters[1:10]
 newphy <- phyloseq(newotu,newtax)
 
