@@ -4,6 +4,10 @@ between two samples. This is done with a mathematical tool called a "distance me
 These distance metrics are used to measure difference in species richness between two populations.
 
 While several of distance metrics exist none of those currently used give reliable, accurate assesments of the data.
+To solve this issue, we reasoned that a metric used in the microbiome should take into account the nature of the environment.
+This brought us to the idea of a metric that would take taxonomic relatedness of present bacteria into account.
+Below is a demonstration of our current testing process, however, we are in the process of preparing microbiome datasets from different animals, organs, soils, and other environments, as well as some fabricated controls, 
+all of which we have selected to find any potential shortcomings of our metric.
 
 
 ## Prepare data.
@@ -70,6 +74,9 @@ meaningful differences, as evidenced by the violin plots below.
 
 <img src="README_files/figure-commonmark/unnamed-chunk-5-1.png"
 style="width:100.0%" />
+However, we found horn to be most promising. 
+This makes sense as it was originally designed for use in forest ecology.
+
 
 We attempted a variety of custom distance functions, where distance was
 derived by calculating separate distance values across all pairwise
