@@ -393,3 +393,8 @@ g.hc.taxhorn.weightedmean <- view.hclust(dist.taxhorn.weightedmean,title="taxhor
 
 # ggsave("plots/hclust_compare.pdf",mg,width=20,height=12)
 # shell.exec(normalizePath("plots/hclust_compare.pdf"))
+rownameslong <- (get.otu(phy.combined.all)[,0])
+
+testotu <- tibble(control1=0*(1:1000), control2=1*(1:1000)  , rownames= get.otu(phy.combined.all)[,0]
+                 )
+

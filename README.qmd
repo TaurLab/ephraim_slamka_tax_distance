@@ -7,7 +7,7 @@ execute:
   warning: false
 ---
 
-## Prepare data
+## Prepare data.
 
 ```{r}
 source("R/makeall.R")

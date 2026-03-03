@@ -9,10 +9,48 @@ all.levels <- c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genu
 taxid.levels <- c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", "taxid")
 bact.levels <- c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
 
-phy.combined <- phy.combined.all %>%
+phy.combined.base <- phy.combined.all %>%
   phy.collapse(taxranks=taxid.levels) %>%
   mutate(otu=taxid) %>%
   select(-taxid)
+phyblank <- phy.combined.all %>%
+  prune_samples(sample_names(.)[1:2],.) #%>%
+  #prune_taxa(taxa_names(.)[1:10],.)
+sample_names(phyblank) <- paste0("sample",1:2)
+otublank <- phyblank %>% get.otu()
+df <- otublank %>% as.data.frame()
+new_df <- df %>% mutate(sample3=0) %>% select(sample3)
+new_otu <- new_df %>% as.matrix()
+otable <- otu_table(new_otu,taxa_are_rows=TRUE)
+oldttable <- tax_table(phyblank)
+blankphy <- phyloseq(otable,oldttable)
+#blankphy is an empty sample, the samplename likely needs to be changed. 
+# newotu <- phyblank %>% 
+# get.otu(as.matrix=FALSE) %>%
+#   mutate(sample3=0) %>%
+#   select(otu,sample3) %>%
+#   set.otu()
+# newtax <- phyblank %>%
+#   get.tax() %>%
+#   select(-full_taxonomy) %>%
+#   set.tax()
+# newphy <- phyloseq(newotu,newtax)
+oldotu <- get.otu(phyblank,as.matrix=FALSE)
+newbact <- oldotu %>%
+  mutate(otu=paste("bacteria",row_number()),
+         sample1=0,sample2=0)
+newotu <- rbind(oldotu,newbact)
+
+oldtax <- get.tax(phy)
+newtaxrows <- oldtax %>%
+  select(-full_taxonomy) %>%
+  mutate(otu=paste("bacteria",row_number()),
+         taxid=paste0("x",taxid),
+         Species=paste("Species",row_number()),
+         Genus=ifelse(Genus=="Clostridium","Clost",Genus),
+         Family=as.character(rnorm(n())))
+newtax <- bind_rows(oldtax,newtaxrows)
+maxdiffphy <- phyloseq(set.otu(newotu),set.tax(newtax))
 
 s.combined <- phy.combined %>% get.samp() %>% 
   select(sample,source,MRN,DateCollection,Sample_ID)

@@ -1,7 +1,12 @@
-Slamka taxdist project
-================
+# Slamka taxdist project
+In the field of microbiome research, it is often useful to measure the quantitative difference 
+between two samples. This is done with a mathematical tool called a "distance metric."
+These distance metrics are used to measure difference in species richness between two populations.
 
-## Prepare data
+While several of distance metrics exist none of those currently used give reliable, accurate assesments of the data.
+
+
+## Prepare data.
 
 We examined 113 samples, collected from a healthy volunteer (`HV`), and
 3 cancer patients undergoing cancer treatment (`PT1`, `PT2`, `PT3`). In
